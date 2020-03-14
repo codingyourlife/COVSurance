@@ -14,11 +14,13 @@ contract MoneyVault is Secondary {
     event WithdrawnByInvestor(address indexed payee, uint256 amount);
     event StateChangedToInvestorFound(address indexed payee, uint256 amount);
     event StateChangedToInsureeFound(address indexed payee, uint256 amount);
+    event StateChangedToActive(address indexed caller);
 
     enum MoneyVaultState {
         Initial,
         InvestorFound,
-        InsureeFound
+        InsureeFound,
+        Active
         // ActiveInsureeBenefits, //TODO
         // ActiveInvestorBenefits, //TODO
         // InsureeNotFound //TODO
@@ -111,6 +113,14 @@ contract MoneyVault is Secondary {
 
             emit StateChangedToInsureeFound(payee, factorizedAmount);
         }
+    }
+
+    function setActive() public onlyPrimary {
+        require(currentState == MoneyVaultState.InsureeFound, "wrong state");
+
+        currentState = MoneyVaultState.Active;
+
+        emit StateChangedToActive(msg.sender);
     }
 
     // /**

@@ -82,14 +82,10 @@ describe("MoneyVault", function() {
         value: "10"
       });
 
-      let failed = undefined;
-      try {
-        await this.moneyVault.insureeDeposits(insuree1, "11", "1");
-      } catch (e) {
-        failed = e;
-      }
-
-      expect(failed).not.to.equal(undefined);
+      await expectRevert(
+        this.moneyVault.insureeDeposits(insuree1, "11", "1"),
+        "invstor amount too low"
+      );
     });
 
     context("states", function() {
@@ -116,6 +112,17 @@ describe("MoneyVault", function() {
 
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("2");
+      });
+
+      it("setActive as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("3");
       });
     });
   });
