@@ -12,6 +12,19 @@ contract MoneyVault is Secondary {
     event DepositedByInvestor(address indexed payee, uint256 amount);
     event DepositedByInsuree(address indexed payee, uint256 amount);
     event WithdrawnByInvestor(address indexed payee, uint256 amount);
+    event StateChangedToInvestorFound(address indexed payee, uint256 amount);
+    event StateChangedToInsureeFound(address indexed payee, uint256 amount);
+
+    enum MoneyVaultState {
+        Initial,
+        InvestorFound,
+        InsureeFound
+        // ActiveInsureeBenefits, //TODO
+        // ActiveInvestorBenefits, //TODO
+        // InsureeNotFound //TODO
+    }
+
+    MoneyVaultState private currentState;
 
     uint256 private _totalInvestorDeposits;
     uint256 private _totalInsureeDeposits;
@@ -19,6 +32,10 @@ contract MoneyVault is Secondary {
 
     mapping(address => uint256) private _investorDeposits;
     mapping(address => uint256) private _insureeDeposits;
+
+    function getCurrentState() public view returns (MoneyVaultState) {
+        return currentState;
+    }
 
     function depositsOfInvestor(address payee) public view returns (uint256) {
         return _investorDeposits[payee];
@@ -45,20 +62,49 @@ contract MoneyVault is Secondary {
      * @param payee The destination address of the funds.
      */
     function investorDeposits(address payee) public payable onlyPrimary {
+        require(
+            currentState == MoneyVaultState.Initial ||
+                currentState == MoneyVaultState.InvestorFound ||
+                currentState == MoneyVaultState.InsureeFound,
+            "wrong state for investment"
+        );
         uint256 amount = msg.value;
         _investorDeposits[payee] = _investorDeposits[payee].add(amount);
         _totalInvestorDeposits = _totalInvestorDeposits.add(amount);
         _totalDeposits = _totalDeposits.add(amount);
 
         emit DepositedByInvestor(payee, amount);
+
+        if (currentState == MoneyVaultState.Initial) {
+            currentState = MoneyVaultState.InvestorFound;
+
+            emit StateChangedToInvestorFound(payee, amount);
+        }
     }
 
     function insureeDeposits(address payee, uint256 amount) public onlyPrimary {
+        require(
+            currentState == MoneyVaultState.InvestorFound ||
+                currentState == MoneyVaultState.InsureeFound,
+            "wrong state for investment"
+        );
+
+        require(
+            _totalInvestorDeposits >= _totalInsureeDeposits.add(amount),
+            "invstor amount too low"
+        );
+
         _insureeDeposits[payee] = _insureeDeposits[payee].add(amount);
         _totalInsureeDeposits = _totalInsureeDeposits.add(amount);
         _totalDeposits = _totalDeposits.add(amount);
 
         emit DepositedByInsuree(payee, amount);
+
+        if (currentState == MoneyVaultState.InvestorFound) {
+            currentState = MoneyVaultState.InsureeFound;
+
+            emit StateChangedToInsureeFound(payee, amount);
+        }
     }
 
     // /**
