@@ -12,10 +12,10 @@ contract MoneyVault is Secondary {
     event Deposited(address indexed payee, uint256 weiAmount);
     event Withdrawn(address indexed payee, uint256 weiAmount);
 
-    mapping(address => uint256) private _deposits;
+    mapping(address => uint256) private _investorDeposits;
 
-    function depositsOf(address payee) public view returns (uint256) {
-        return _deposits[payee];
+    function depositsOfInvestor(address payee) public view returns (uint256) {
+        return _investorDeposits[payee];
     }
 
     /**
@@ -24,7 +24,7 @@ contract MoneyVault is Secondary {
      */
     function investorDeposits(address payee) public payable onlyPrimary {
         uint256 amount = msg.value;
-        _deposits[payee] = _deposits[payee].add(amount);
+        _investorDeposits[payee] = _investorDeposits[payee].add(amount);
 
         emit Deposited(payee, amount);
     }
@@ -41,9 +41,9 @@ contract MoneyVault is Secondary {
      * @param payee The address whose funds will be withdrawn and transferred to.
      */
     function withdraw(address payable payee) public onlyPrimary {
-        uint256 payment = _deposits[payee];
+        uint256 payment = _investorDeposits[payee];
 
-        _deposits[payee] = 0;
+        _investorDeposits[payee] = 0;
 
         payee.transfer(payment);
 

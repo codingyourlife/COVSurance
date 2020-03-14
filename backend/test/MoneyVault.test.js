@@ -26,12 +26,11 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        const moneyVaultBalance = await balance.current(
-          this.moneyVault.address
+        const depositOfInvestor = await this.moneyVault.depositsOfInvestor(
+          investor1
         );
-        const totalDeposit = await this.moneyVault.depositsOf(investor1);
 
-        expect(totalDeposit.toString()).to.equal(amount.toString());
+        expect(depositOfInvestor.toString()).to.equal(amount.toString());
       });
     });
   });
