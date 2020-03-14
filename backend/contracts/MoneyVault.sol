@@ -82,28 +82,34 @@ contract MoneyVault is Secondary {
         }
     }
 
-    function insureeDeposits(address payee, uint256 amount) public onlyPrimary {
+    function insureeDeposits(address payee, uint256 amount, uint256 factor)
+        public
+        onlyPrimary
+    {
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
             "wrong state for investment"
         );
 
+        uint256 factorizedAmount = amount.mul(factor);
+
         require(
-            _totalInvestorDeposits >= _totalInsureeDeposits.add(amount),
+            _totalInvestorDeposits >=
+                _totalInsureeDeposits.add(factorizedAmount),
             "invstor amount too low"
         );
 
-        _insureeDeposits[payee] = _insureeDeposits[payee].add(amount);
-        _totalInsureeDeposits = _totalInsureeDeposits.add(amount);
-        _totalDeposits = _totalDeposits.add(amount);
+        _insureeDeposits[payee] = _insureeDeposits[payee].add(factorizedAmount);
+        _totalInsureeDeposits = _totalInsureeDeposits.add(factorizedAmount);
+        _totalDeposits = _totalDeposits.add(factorizedAmount);
 
-        emit DepositedByInsuree(payee, amount);
+        emit DepositedByInsuree(payee, factorizedAmount);
 
         if (currentState == MoneyVaultState.InvestorFound) {
             currentState = MoneyVaultState.InsureeFound;
 
-            emit StateChangedToInsureeFound(payee, amount);
+            emit StateChangedToInsureeFound(payee, factorizedAmount);
         }
     }
 

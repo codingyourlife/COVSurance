@@ -39,7 +39,7 @@ describe("MoneyVault", function() {
           value: amount
         });
 
-        await this.moneyVault.insureeDeposits(insuree1, amount);
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
         const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
           insuree1
         );
@@ -47,11 +47,25 @@ describe("MoneyVault", function() {
         expect(depositOfInsuree.toString()).to.equal(amount.toString());
       });
 
+      it("insuree factor", async function() {
+        //investorDeposits required
+        await this.moneyVault.investorDeposits(investor1, {
+          value: "20"
+        });
+
+        await this.moneyVault.insureeDeposits(insuree1, "10", "2");
+        const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
+          insuree1
+        );
+
+        expect(depositOfInsuree.toString()).to.equal((10 * 2).toString()); //10*2
+      });
+
       it("totalInvestorDeposits and totalInsureeDeposits", async function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: "20"
         });
-        await this.moneyVault.insureeDeposits(insuree1, "10");
+        await this.moneyVault.insureeDeposits(insuree1, "10", "1");
 
         const totalInvestorDeposits = await this.moneyVault.getTotalInvestorDeposits();
         const totalInsureeDeposits = await this.moneyVault.getTotalInsureeDeposits();
@@ -70,7 +84,7 @@ describe("MoneyVault", function() {
 
       let failed = undefined;
       try {
-        await this.moneyVault.insureeDeposits(insuree1, "11");
+        await this.moneyVault.insureeDeposits(insuree1, "11", "1");
       } catch (e) {
         failed = e;
       }
@@ -98,7 +112,7 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount);
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
 
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("2");
