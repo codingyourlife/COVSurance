@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { InsureComponent } from './insure.component'
 import { Routes, RouterModule } from '@angular/router'
-import { InvestComponent } from '../invest/invest.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 import { SharedMaterialModule } from 'app/shared/shared-material.module'
 import { FlexLayoutModule } from '@angular/flex-layout'
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'
+import { NgxDatatableModule } from '@swimlane/ngx-datatable'
 
 const InsureRoutes: Routes = [
   {
@@ -16,7 +16,7 @@ const InsureRoutes: Routes = [
 ]
 
 @NgModule({
-  declarations: [InvestComponent],
+  declarations: [InsureComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -24,6 +24,7 @@ const InsureRoutes: Routes = [
     SharedMaterialModule,
     FlexLayoutModule,
     PerfectScrollbarModule,
+    NgxDatatableModule,
     RouterModule.forChild(InsureRoutes),
   ],
 })
