@@ -161,7 +161,7 @@ describe("MoneyVault", function() {
     });
 
     context("withdraw", function() {
-      it("withdraw as investor if insuredCaseHappened=false", async function() {
+      it("withdraw as investor as intended if insuredCaseHappened=false", async function() {
         const balanceTracker = await balance.tracker(investor1);
 
         await this.moneyVault.investorDeposits(investor1, {
@@ -189,6 +189,35 @@ describe("MoneyVault", function() {
         await expectRevert(
           this.moneyVault.claimAsInvestor(investor1),
           "not ActiveInvestorBenefits"
+        );
+      });
+
+      it("withdraw as insuree as intended if insuredCaseHappened=true", async function() {
+        const balanceTracker = await balance.tracker(insuree1);
+
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(true);
+
+        await this.moneyVault.claimAsInsuree(insuree1);
+      });
+
+      it("withdraw as insuree if insuredCaseHappened=false should fail", async function() {
+        const balanceTracker = await balance.tracker(insuree1);
+
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(false);
+
+        await expectRevert(
+          this.moneyVault.claimAsInsuree(insuree1),
+          "not ActiveInsureeBenefits"
         );
       });
     });
