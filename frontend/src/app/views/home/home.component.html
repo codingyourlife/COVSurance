@@ -1,0 +1,95 @@
+<div
+  [perfectScrollbar]="{}"
+  fxLayout="column wrap"
+  fxLayoutAlign="center center"
+>
+  <div class="header-img"></div>
+  <div
+    class="signup4-container mat-elevation-z4"
+    fxLayout="column wrap"
+    fxLayout.xs="column"
+    fxLayoutAlign="center stretch"
+    fxFlex="20"
+    [@animate]="{
+      value: '*',
+      params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+    }"
+    style="width: 60%; margin-bottom: 32px; margin-top: 160px; max-width: 600px; background: white;"
+  >
+    <!-- Right side content -->
+    <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
+      <h1>COVSurance</h1>
+      <p>Demofall zur Absicherung von Pandemiebedingten finanziellen Schäden</p>
+      <p>Sie können entweder Investieren oder Versichern</p>
+    </div>
+    <div
+      style="margin-top:auto"
+      fxLayout="row"
+      fxLayoutAlign="space-around center"
+    >
+      <button
+        mat-button
+        style="width: 100%;"
+        class="mat-accent"
+        routerLink="/invest"
+      >
+        Investieren
+      </button>
+      <button
+        mat-button
+        style="width: 100%;"
+        class="mat-accent"
+        routerLink="/insure"
+      >
+        Versichern
+      </button>
+    </div>
+  </div>
+
+  <div
+    fxLayout="row"
+    style="width: 60%; max-width: 600px;"
+    fxLayoutAlign="space-around center"
+  >
+    <mat-card
+      style="width: 100%; height: 100px;"
+      fxLayout="column"
+      fxLayoutAlign="center center"
+    >
+      <mat-card-content>Text</mat-card-content>
+    </mat-card>
+    <mat-card
+      style="width: 100%; height: 100px;"
+      fxLayout="column"
+      fxLayoutAlign="center center"
+    >
+      <mat-card-content>Text</mat-card-content>
+    </mat-card>
+    <mat-card
+      style="width: 100%; height: 100px;"
+      fxLayout="column"
+      fxLayoutAlign="center center"
+    >
+      <mat-card-content>Text</mat-card-content>
+    </mat-card>
+  </div>
+  <div
+    fxLayout="row"
+    style="width: 60%; margin-top: 32px; max-width: 600px;"
+    fxLayoutAlign="center center"
+  >
+    <mat-card>
+      <mat-card-content>
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+        eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
+        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
+        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+        amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+        nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
+        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+        ipsum dolor sit amet.
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
