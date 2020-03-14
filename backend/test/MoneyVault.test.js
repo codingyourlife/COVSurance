@@ -4,7 +4,8 @@ const {
   constants,
   ether,
   expectEvent,
-  expectRevert
+  expectRevert,
+  time
 } = require("@openzeppelin/test-helpers");
 const { expect } = require("chai");
 const zero_address = "0x0000000000000000000000000000000000000000";
@@ -18,7 +19,9 @@ describe("MoneyVault", function() {
 
   context("once deployed", function() {
     beforeEach(async function() {
-      this.moneyVault = await MoneyVault.new();
+      const maturityStart = await time.latest(); //already active
+      const maturityEnd = (await time.latest()).add(time.duration.days(30)); //1 month
+      this.moneyVault = await MoneyVault.new(maturityStart, maturityEnd);
     });
 
     context("investments", function() {
@@ -123,6 +126,20 @@ describe("MoneyVault", function() {
 
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("3");
+      });
+
+      it("setActive too early", async function() {
+        const maturityStart = (await time.latest()).add(
+          time.duration.minutes(5)
+        ); //active in 5min
+        const maturityEnd = (await time.latest()).add(time.duration.days(30)); //1 month
+        const tmpMoneyVault = await MoneyVault.new(maturityStart, maturityEnd);
+
+        await tmpMoneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await tmpMoneyVault.insureeDeposits(insuree1, amount, "1");
+        await expectRevert(tmpMoneyVault.setActive(), "too early");
       });
 
       it("closeCase(insuredCaseHappened=true) as intended", async function() {
