@@ -21,7 +21,7 @@ describe("MoneyVault", function() {
       this.moneyVault = await MoneyVault.new();
     });
 
-    context("first invstor investment", function() {
+    context("investments", function() {
       it("investorDeposits and investment is parked like in an escrow", async function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
@@ -31,6 +31,30 @@ describe("MoneyVault", function() {
         );
 
         expect(depositOfInvestor.toString()).to.equal(amount.toString());
+      });
+
+      it("insureeDeposits are saved", async function() {
+        await this.moneyVault.insureeDeposits(insuree1, amount);
+        const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
+          insuree1
+        );
+
+        expect(depositOfInsuree.toString()).to.equal(amount.toString());
+      });
+
+      it("totalInvestorDeposits and totalInsureeDeposits", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: "10"
+        });
+        await this.moneyVault.insureeDeposits(insuree1, "20");
+
+        const totalInvestorDeposits = await this.moneyVault.getTotalInvestorDeposits();
+        const totalInsureeDeposits = await this.moneyVault.getTotalInsureeDeposits();
+        const totalDeposits = await this.moneyVault.getTotalDeposits();
+
+        expect(totalInvestorDeposits.toString()).to.equal("10");
+        expect(totalInsureeDeposits.toString()).to.equal("20");
+        expect(totalDeposits.toString()).to.equal("30");
       });
     });
   });
