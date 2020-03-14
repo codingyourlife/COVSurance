@@ -39,7 +39,7 @@ describe("MoneyVault", function() {
           value: amount
         });
 
-        await this.moneyVault.insureeDeposits(insuree1, amount);
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
         const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
           insuree1
         );
@@ -47,11 +47,25 @@ describe("MoneyVault", function() {
         expect(depositOfInsuree.toString()).to.equal(amount.toString());
       });
 
+      it("insuree factor", async function() {
+        //investorDeposits required
+        await this.moneyVault.investorDeposits(investor1, {
+          value: "20"
+        });
+
+        await this.moneyVault.insureeDeposits(insuree1, "10", "2");
+        const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
+          insuree1
+        );
+
+        expect(depositOfInsuree.toString()).to.equal((10 * 2).toString()); //10*2
+      });
+
       it("totalInvestorDeposits and totalInsureeDeposits", async function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: "20"
         });
-        await this.moneyVault.insureeDeposits(insuree1, "10");
+        await this.moneyVault.insureeDeposits(insuree1, "10", "1");
 
         const totalInvestorDeposits = await this.moneyVault.getTotalInvestorDeposits();
         const totalInsureeDeposits = await this.moneyVault.getTotalInsureeDeposits();
@@ -68,14 +82,10 @@ describe("MoneyVault", function() {
         value: "10"
       });
 
-      let failed = undefined;
-      try {
-        await this.moneyVault.insureeDeposits(insuree1, "11");
-      } catch (e) {
-        failed = e;
-      }
-
-      expect(failed).not.to.equal(undefined);
+      await expectRevert(
+        this.moneyVault.insureeDeposits(insuree1, "11", "1"),
+        "invstor amount too low"
+      );
     });
 
     context("states", function() {
@@ -98,10 +108,88 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount);
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
 
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("2");
+      });
+
+      it("setActive as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("3");
+      });
+
+      it("closeCase(insuredCaseHappened=true) as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(true);
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("4");
+      });
+
+      it("closeCase(insuredCaseHappened=false) as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(false);
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("5");
+      });
+
+      it("setNoInsureeFound as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.setNoInsureeFound();
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("6");
+      });
+    });
+
+    context("withdraw", function() {
+      it("withdraw as investor if insuredCaseHappened=false", async function() {
+        const balanceTracker = await balance.tracker(investor1);
+
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(false);
+
+        await this.moneyVault.claimAsInvestor(investor1);
+
+        expect(await balanceTracker.delta()).to.be.bignumber.equal(amount);
+      });
+
+      it("withdraw as investor if insuredCaseHappened=true should fail", async function() {
+        const balanceTracker = await balance.tracker(investor1);
+
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(true);
+
+        await expectRevert(
+          this.moneyVault.claimAsInvestor(investor1),
+          "not ActiveInvestorBenefits"
+        );
       });
     });
   });

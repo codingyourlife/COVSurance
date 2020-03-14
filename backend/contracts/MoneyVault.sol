@@ -14,14 +14,19 @@ contract MoneyVault is Secondary {
     event WithdrawnByInvestor(address indexed payee, uint256 amount);
     event StateChangedToInvestorFound(address indexed payee, uint256 amount);
     event StateChangedToInsureeFound(address indexed payee, uint256 amount);
+    event StateChangedToActive(address indexed caller);
+    event StateChangedToActiveInsureeBenefits(address indexed caller);
+    event StateChangedToActiveInvestorBenefits(address indexed caller);
+    event StateChangedToNoInsureeFound(address indexed caller);
 
     enum MoneyVaultState {
         Initial,
         InvestorFound,
-        InsureeFound
-        // ActiveInsureeBenefits, //TODO
-        // ActiveInvestorBenefits, //TODO
-        // InsureeNotFound //TODO
+        InsureeFound,
+        Active,
+        ActiveInsureeBenefits,
+        ActiveInvestorBenefits,
+        NoInsureeFound
     }
 
     MoneyVaultState private currentState;
@@ -82,50 +87,89 @@ contract MoneyVault is Secondary {
         }
     }
 
-    function insureeDeposits(address payee, uint256 amount) public onlyPrimary {
+    function insureeDeposits(address payee, uint256 amount, uint256 factor)
+        public
+        onlyPrimary
+    {
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
             "wrong state for investment"
         );
 
+        uint256 factorizedAmount = amount.mul(factor);
+
         require(
-            _totalInvestorDeposits >= _totalInsureeDeposits.add(amount),
+            _totalInvestorDeposits >=
+                _totalInsureeDeposits.add(factorizedAmount),
             "invstor amount too low"
         );
 
-        _insureeDeposits[payee] = _insureeDeposits[payee].add(amount);
-        _totalInsureeDeposits = _totalInsureeDeposits.add(amount);
-        _totalDeposits = _totalDeposits.add(amount);
+        _insureeDeposits[payee] = _insureeDeposits[payee].add(factorizedAmount);
+        _totalInsureeDeposits = _totalInsureeDeposits.add(factorizedAmount);
+        _totalDeposits = _totalDeposits.add(factorizedAmount);
 
-        emit DepositedByInsuree(payee, amount);
+        emit DepositedByInsuree(payee, factorizedAmount);
 
         if (currentState == MoneyVaultState.InvestorFound) {
             currentState = MoneyVaultState.InsureeFound;
 
-            emit StateChangedToInsureeFound(payee, amount);
+            emit StateChangedToInsureeFound(payee, factorizedAmount);
         }
     }
 
-    // /**
-    //  * @dev Withdraw accumulated balance for a payee, forwarding 2300 gas (a
-    //  * Solidity `transfer`).
-    //  *
-    //  * NOTE: This function has been deprecated, use {withdrawWithGas} instead.
-    //  * Calling contracts with fixed-gas limits is an anti-pattern and may break
-    //  * contract interactions in network upgrades (hardforks).
-    //  * https://diligence.consensys.net/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more.]
-    //  *
-    //  * @param payee The address whose funds will be withdrawn and transferred to.
-    //  */
-    // function withdraw(address payable payee) public onlyPrimary {
-    //     uint256 payment = _investorDeposits[payee];
+    function setActive() public onlyPrimary {
+        require(currentState == MoneyVaultState.InsureeFound, "wrong state");
 
-    //     _investorDeposits[payee] = 0;
+        currentState = MoneyVaultState.Active;
 
-    //     payee.transfer(payment);
+        emit StateChangedToActive(msg.sender);
+    }
 
-    //     emit WithdrawnByInvestor(payee, payment);
-    // }
+    function setNoInsureeFound() public onlyPrimary {
+        require(currentState == MoneyVaultState.InvestorFound, "wrong state");
+
+        currentState = MoneyVaultState.NoInsureeFound;
+
+        emit StateChangedToNoInsureeFound(msg.sender);
+    }
+
+    function closeCase(bool insuredCaseHappened) public onlyPrimary {
+        require(currentState == MoneyVaultState.Active, "wrong state");
+
+        if (insuredCaseHappened) {
+            currentState = MoneyVaultState.ActiveInsureeBenefits;
+            emit StateChangedToActiveInsureeBenefits(msg.sender);
+        } else {
+            currentState = MoneyVaultState.ActiveInvestorBenefits;
+            emit StateChangedToActiveInvestorBenefits(msg.sender);
+        }
+    }
+
+    /**
+     * @dev Withdraw accumulated balance for a payee, forwarding 2300 gas (a
+     * Solidity `transfer`).
+     *
+     * NOTE: This function has been deprecated, use {withdrawWithGas} instead.
+     * Calling contracts with fixed-gas limits is an anti-pattern and may break
+     * contract interactions in network upgrades (hardforks).
+     * https://diligence.consensys.net/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more.]
+     *
+     * @param payee The address whose funds will be withdrawn and transferred to.
+     */
+    function claimAsInvestor(address payable payee) public onlyPrimary {
+        require(
+            currentState == MoneyVaultState.ActiveInvestorBenefits,
+            "not ActiveInvestorBenefits"
+        );
+
+        uint256 payment = _investorDeposits[payee];
+
+        _investorDeposits[payee] = 0;
+
+        payee.transfer(payment);
+
+        emit WithdrawnByInvestor(payee, payment);
+    }
 
 }
