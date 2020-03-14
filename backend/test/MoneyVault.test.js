@@ -149,5 +149,38 @@ describe("MoneyVault", function() {
         expect(currentState.toString()).to.equal("5");
       });
     });
+
+    context("withdraw", function() {
+      it("withdraw as investor if insuredCaseHappened=false", async function() {
+        const balanceTracker = await balance.tracker(investor1);
+
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(false);
+
+        await this.moneyVault.claimAsInvestor(investor1);
+
+        expect(await balanceTracker.delta()).to.be.bignumber.equal(amount);
+      });
+
+      it("withdraw as investor if insuredCaseHappened=true should fail", async function() {
+        const balanceTracker = await balance.tracker(investor1);
+
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(true);
+
+        await expectRevert(
+          this.moneyVault.claimAsInvestor(investor1),
+          "not ActiveInvestorBenefits"
+        );
+      });
+    });
   });
 });
