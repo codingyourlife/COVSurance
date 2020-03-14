@@ -9,9 +9,11 @@ contract MoneyVault is Secondary {
     using SafeMath for uint256;
     using Address for address;
 
-    constructor(uint256 maturityStart, uint256 maturityEnd) public {
-        _maturityStart = maturityStart;
-        _maturityEnd = maturityEnd;
+    constructor(uint256 insurancePeriodStart, uint256 insurancePeriodEnd)
+        public
+    {
+        _insurancePeriodStart = insurancePeriodStart;
+        _insurancePeriodEnd = insurancePeriodEnd;
     }
 
     event DepositedByInvestor(address indexed payee, uint256 amount);
@@ -40,8 +42,8 @@ contract MoneyVault is Secondary {
     uint256 private _totalInsureeDeposits;
     uint256 private _totalDeposits;
 
-    uint256 private _maturityStart;
-    uint256 private _maturityEnd;
+    uint256 private _insurancePeriodStart;
+    uint256 private _insurancePeriodEnd;
 
     mapping(address => uint256) private _investorDeposits;
     mapping(address => uint256) private _insureeDeposits;
@@ -128,8 +130,8 @@ contract MoneyVault is Secondary {
 
     function setActive() public onlyPrimary {
         require(currentState == MoneyVaultState.InsureeFound, "wrong state");
-        require(_maturityStart <= now, "too early");
-        // require(_maturityEnd >= now, "too late"); //not important
+        require(_insurancePeriodStart <= now, "too early");
+        // require(_insurancePeriodEnd >= now, "too late"); //not important
 
         currentState = MoneyVaultState.Active;
 

@@ -19,9 +19,14 @@ describe("MoneyVault", function() {
 
   context("once deployed", function() {
     beforeEach(async function() {
-      const maturityStart = await time.latest(); //already active
-      const maturityEnd = (await time.latest()).add(time.duration.days(30)); //1 month
-      this.moneyVault = await MoneyVault.new(maturityStart, maturityEnd);
+      const insurancePeriodStart = await time.latest(); //already active
+      const insurancePeriodEnd = (await time.latest()).add(
+        time.duration.days(30)
+      ); //1 month
+      this.moneyVault = await MoneyVault.new(
+        insurancePeriodStart,
+        insurancePeriodEnd
+      );
     });
 
     context("investments", function() {
@@ -129,11 +134,16 @@ describe("MoneyVault", function() {
       });
 
       it("setActive too early", async function() {
-        const maturityStart = (await time.latest()).add(
+        const insurancePeriodStart = (await time.latest()).add(
           time.duration.minutes(5)
         ); //active in 5min
-        const maturityEnd = (await time.latest()).add(time.duration.days(30)); //1 month
-        const tmpMoneyVault = await MoneyVault.new(maturityStart, maturityEnd);
+        const insurancePeriodEnd = (await time.latest()).add(
+          time.duration.days(30)
+        ); //1 month
+        const tmpMoneyVault = await MoneyVault.new(
+          insurancePeriodStart,
+          insurancePeriodEnd
+        );
 
         await tmpMoneyVault.investorDeposits(investor1, {
           value: amount
