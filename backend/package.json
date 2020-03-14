@@ -1,0 +1,15 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Blockchain CatBond // Insurance against Corona - Prototype",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx oz compile"
+  },
+  "keywords": [],
+  "author": "Johannes Mayer",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/cli": "^2.7.2"
+  }
+}
