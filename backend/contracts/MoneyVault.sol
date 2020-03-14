@@ -17,6 +17,7 @@ contract MoneyVault is Secondary {
     event StateChangedToActive(address indexed caller);
     event StateChangedToActiveInsureeBenefits(address indexed caller);
     event StateChangedToActiveInvestorBenefits(address indexed caller);
+    event StateChangedToNoInsureeFound(address indexed caller);
 
     enum MoneyVaultState {
         Initial,
@@ -24,8 +25,8 @@ contract MoneyVault is Secondary {
         InsureeFound,
         Active,
         ActiveInsureeBenefits,
-        ActiveInvestorBenefits
-        // InsureeNotFound //TODO
+        ActiveInvestorBenefits,
+        NoInsureeFound
     }
 
     MoneyVaultState private currentState;
@@ -125,6 +126,14 @@ contract MoneyVault is Secondary {
         emit StateChangedToActive(msg.sender);
     }
 
+    function setNoInsureeFound() public onlyPrimary {
+        require(currentState == MoneyVaultState.InvestorFound, "wrong state");
+
+        currentState = MoneyVaultState.NoInsureeFound;
+
+        emit StateChangedToNoInsureeFound(msg.sender);
+    }
+
     function closeCase(bool insuredCaseHappened) public onlyPrimary {
         require(currentState == MoneyVaultState.Active, "wrong state");
 
@@ -137,25 +146,30 @@ contract MoneyVault is Secondary {
         }
     }
 
-    // /**
-    //  * @dev Withdraw accumulated balance for a payee, forwarding 2300 gas (a
-    //  * Solidity `transfer`).
-    //  *
-    //  * NOTE: This function has been deprecated, use {withdrawWithGas} instead.
-    //  * Calling contracts with fixed-gas limits is an anti-pattern and may break
-    //  * contract interactions in network upgrades (hardforks).
-    //  * https://diligence.consensys.net/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more.]
-    //  *
-    //  * @param payee The address whose funds will be withdrawn and transferred to.
-    //  */
-    // function withdraw(address payable payee) public onlyPrimary {
-    //     uint256 payment = _investorDeposits[payee];
+    /**
+     * @dev Withdraw accumulated balance for a payee, forwarding 2300 gas (a
+     * Solidity `transfer`).
+     *
+     * NOTE: This function has been deprecated, use {withdrawWithGas} instead.
+     * Calling contracts with fixed-gas limits is an anti-pattern and may break
+     * contract interactions in network upgrades (hardforks).
+     * https://diligence.consensys.net/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more.]
+     *
+     * @param payee The address whose funds will be withdrawn and transferred to.
+     */
+    function claimAsInvestor(address payable payee) public onlyPrimary {
+        require(
+            currentState == MoneyVaultState.ActiveInvestorBenefits,
+            "not ActiveInvestorBenefits"
+        );
 
-    //     _investorDeposits[payee] = 0;
+        uint256 payment = _investorDeposits[payee];
 
-    //     payee.transfer(payment);
+        _investorDeposits[payee] = 0;
 
-    //     emit WithdrawnByInvestor(payee, payment);
-    // }
+        payee.transfer(payment);
+
+        emit WithdrawnByInvestor(payee, payment);
+    }
 
 }

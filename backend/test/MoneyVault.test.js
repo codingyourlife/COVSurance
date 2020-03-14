@@ -148,6 +148,16 @@ describe("MoneyVault", function() {
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("5");
       });
+
+      it("setNoInsureeFound as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.setNoInsureeFound();
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("6");
+      });
     });
 
     context("withdraw", function() {
