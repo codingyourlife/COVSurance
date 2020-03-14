@@ -124,6 +124,30 @@ describe("MoneyVault", function() {
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("3");
       });
+
+      it("closeCase(insuredCaseHappened=true) as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(true);
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("4");
+      });
+
+      it("closeCase(insuredCaseHappened=false) as intended", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: amount
+        });
+        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.setActive();
+        await this.moneyVault.closeCase(false);
+
+        const currentState = await this.moneyVault.getCurrentState();
+        expect(currentState.toString()).to.equal("5");
+      });
     });
   });
 });
