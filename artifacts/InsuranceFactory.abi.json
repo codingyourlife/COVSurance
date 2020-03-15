@@ -1,0 +1,49 @@
+[
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenNameInvestor",
+        "type": "string"
+      },
+      {
+        "name": "tokenNameInsuree",
+        "type": "string"
+      },
+      {
+        "name": "insurancePeriodStart",
+        "type": "uint256"
+      },
+      {
+        "name": "insurancePeriodEnd",
+        "type": "uint256"
+      },
+      {
+        "name": "signaturePeriodStart",
+        "type": "uint256"
+      },
+      {
+        "name": "signaturePeriodEnd",
+        "type": "uint256"
+      },
+      {
+        "name": "rateInPercent",
+        "type": "uint8"
+      }
+    ],
+    "name": "createInsuranceFor",
+    "outputs": [
+      {
+        "name": "investorCoin",
+        "type": "address"
+      },
+      {
+        "name": "insureeCoin",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
