@@ -9,11 +9,16 @@ contract MoneyVault is Secondary {
     using SafeMath for uint256;
     using Address for address;
 
-    constructor(uint256 insurancePeriodStart, uint256 insurancePeriodEnd)
-        public
-    {
+    constructor(
+        uint256 insurancePeriodStart,
+        uint256 insurancePeriodEnd,
+        uint256 signaturePeriodStart,
+        uint256 signaturePeriodEnd
+    ) public {
         _insurancePeriodStart = insurancePeriodStart;
         _insurancePeriodEnd = insurancePeriodEnd;
+        _signaturePeriodStart = signaturePeriodStart;
+        _signaturePeriodEnd = signaturePeriodEnd;
     }
 
     event DepositedByInvestor(address indexed payee, uint256 amount);
@@ -44,6 +49,9 @@ contract MoneyVault is Secondary {
 
     uint256 private _insurancePeriodStart;
     uint256 private _insurancePeriodEnd;
+
+    uint256 private _signaturePeriodStart;
+    uint256 private _signaturePeriodEnd;
 
     mapping(address => uint256) private _investorDeposits;
     mapping(address => uint256) private _insureeDeposits;
@@ -83,17 +91,19 @@ contract MoneyVault is Secondary {
                 currentState == MoneyVaultState.InsureeFound,
             "wrong state for investment"
         );
-        uint256 amount = msg.value;
-        _investorDeposits[payee] = _investorDeposits[payee].add(amount);
-        _totalInvestorDeposits = _totalInvestorDeposits.add(amount);
-        _totalDeposits = _totalDeposits.add(amount);
+        require(_signaturePeriodStart <= now, "too early");
+        require(_signaturePeriodEnd >= now, "too late");
 
-        emit DepositedByInvestor(payee, amount);
+        _investorDeposits[payee] = _investorDeposits[payee].add(msg.value);
+        _totalInvestorDeposits = _totalInvestorDeposits.add(msg.value);
+        _totalDeposits = _totalDeposits.add(msg.value);
+
+        emit DepositedByInvestor(payee, msg.value);
 
         if (currentState == MoneyVaultState.Initial) {
             currentState = MoneyVaultState.InvestorFound;
 
-            emit StateChangedToInvestorFound(payee, amount);
+            emit StateChangedToInvestorFound(payee, msg.value);
         }
     }
 
@@ -106,6 +116,8 @@ contract MoneyVault is Secondary {
                 currentState == MoneyVaultState.InsureeFound,
             "wrong state for investment"
         );
+        require(_signaturePeriodStart <= now, "too early");
+        require(_signaturePeriodEnd >= now, "too late");
 
         uint256 factorizedAmount = amount.mul(factor);
 

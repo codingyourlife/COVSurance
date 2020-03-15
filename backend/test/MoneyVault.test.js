@@ -23,9 +23,15 @@ describe("MoneyVault", function() {
       const insurancePeriodEnd = (await time.latest()).add(
         time.duration.days(30)
       ); //1 month
+
+      const signaturePeriodStart = insurancePeriodStart;
+      const signaturePeriodEnd = insurancePeriodEnd;
+
       this.moneyVault = await MoneyVault.new(
         insurancePeriodStart,
-        insurancePeriodEnd
+        insurancePeriodEnd,
+        signaturePeriodStart,
+        signaturePeriodEnd
       );
     });
 
@@ -41,6 +47,58 @@ describe("MoneyVault", function() {
         expect(depositOfInvestor.toString()).to.equal(amount.toString());
       });
 
+      it("investorDeposits too early", async function() {
+        const insurancePeriodStart = (await time.latest()).add(
+          time.duration.days(30)
+        ); //in 5min
+        const insurancePeriodEnd = (await time.latest()).add(
+          time.duration.days(30)
+        ); //1 month
+
+        const signaturePeriodStart = insurancePeriodStart;
+        const signaturePeriodEnd = insurancePeriodEnd;
+
+        const tmpMoneyVault = await MoneyVault.new(
+          insurancePeriodStart,
+          insurancePeriodEnd,
+          signaturePeriodStart,
+          signaturePeriodEnd
+        );
+
+        await expectRevert(
+          tmpMoneyVault.investorDeposits(investor1, {
+            value: amount
+          }),
+          "too early"
+        );
+      });
+
+      it("investorDeposits too late", async function() {
+        const insurancePeriodStart = (await time.latest()).sub(
+          time.duration.days(35)
+        ); //way back
+        const insurancePeriodEnd = (await time.latest()).sub(
+          time.duration.days(30)
+        ); //way back
+
+        const signaturePeriodStart = insurancePeriodStart;
+        const signaturePeriodEnd = insurancePeriodEnd;
+
+        const tmpMoneyVault = await MoneyVault.new(
+          insurancePeriodStart,
+          insurancePeriodEnd,
+          signaturePeriodStart,
+          signaturePeriodEnd
+        );
+
+        await expectRevert(
+          tmpMoneyVault.investorDeposits(investor1, {
+            value: amount
+          }),
+          "too late"
+        );
+      });
+
       it("insureeDeposits are saved", async function() {
         //investorDeposits required
         await this.moneyVault.investorDeposits(investor1, {
@@ -53,6 +111,37 @@ describe("MoneyVault", function() {
         );
 
         expect(depositOfInsuree.toString()).to.equal(amount.toString());
+      });
+
+      it("insureeDeposits too early (fails because not even in state)", async function() {
+        const insurancePeriodStart = (await time.latest()).add(
+          time.duration.minutes(5)
+        ); //in 5min
+        const insurancePeriodEnd = (await time.latest()).add(
+          time.duration.days(30)
+        ); //1 month
+
+        const signaturePeriodStart = insurancePeriodStart;
+        const signaturePeriodEnd = insurancePeriodEnd;
+
+        const tmpMoneyVault = await MoneyVault.new(
+          insurancePeriodStart,
+          insurancePeriodEnd,
+          signaturePeriodStart,
+          signaturePeriodEnd
+        );
+
+        await expectRevert(
+          tmpMoneyVault.investorDeposits(investor1, {
+            value: amount
+          }),
+          "too early"
+        );
+
+        await expectRevert(
+          tmpMoneyVault.insureeDeposits(insuree1, amount, "1"),
+          "wrong state for investment."
+        );
       });
 
       it("insuree factor", async function() {
@@ -140,9 +229,15 @@ describe("MoneyVault", function() {
         const insurancePeriodEnd = (await time.latest()).add(
           time.duration.days(30)
         ); //1 month
+
+        const signaturePeriodStart = await time.latest();
+        const signaturePeriodEnd = insurancePeriodEnd;
+
         const tmpMoneyVault = await MoneyVault.new(
           insurancePeriodStart,
-          insurancePeriodEnd
+          insurancePeriodEnd,
+          signaturePeriodStart,
+          signaturePeriodEnd
         );
 
         await tmpMoneyVault.investorDeposits(investor1, {
