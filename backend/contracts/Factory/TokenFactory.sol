@@ -2,17 +2,18 @@ pragma solidity ^0.5.5;
 
 import "../Coins/InvestorCoin.sol";
 import "../Coins/InsureeCoin.sol";
+import "./Interfaces/ITokenFactory.sol";
 
-contract TokenFactory {
+contract TokenFactory is ITokenFactory {
     event InvestorCoinCreated(address indexed sender, InvestorCoin coin);
     event InsureeCoinCreated(address indexed sender, InsureeCoin coin);
 
     function createCoins(
-        string memory tokenNameInvestorCoin,
-        string memory tokenNameInsureeCoin,
+        string calldata tokenNameInvestorCoin,
+        string calldata tokenNameInsureeCoin,
         uint256 rateInPercent,
         address moneyVault
-    ) public returns (InvestorCoin, InsureeCoin) {
+    ) external returns (address, address) {
         InvestorCoin investorCoin = new InvestorCoin(
             tokenNameInvestorCoin,
             "COVInv",
@@ -39,54 +40,7 @@ contract TokenFactory {
 
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 
-        return (investorCoin, insureeCoin);
+        return (address(investorCoin), address(insureeCoin));
 
     }
-
-    // function createInvestorCoin(
-    //     string memory tokenBaseName,
-    //     uint256 rateInPercent,
-    //     address moneyVault
-    // ) public returns (InvestorCoin) {
-    //     string memory symbol = "COVInv";
-    //     uint8 decimals = 18;
-    //     InvestorCoin investorCoin = new InvestorCoin(
-    //         tokenBaseName,
-    //         symbol,
-    //         decimals
-    //     );
-
-    //     investorCoin.setRateInPercent(rateInPercent);
-    //     investorCoin.setMoneyVault(moneyVault);
-
-    //     emit InvestorCoinCreated(msg.sender, investorCoin);
-
-    //     return investorCoin;
-    // }
-
-    // function createInsureeCoin(
-    //     string memory tokenBaseName,
-    //     address investorCoinAddress
-    // ) public returns (InsureeCoin) {
-    //     string memory symbol = "COVIns";
-    //     uint8 decimals = 18;
-    //     InvestorCoin investorCoin = InvestorCoin(investorCoinAddress);
-    //     InsureeCoin insureeCoin = new InsureeCoin(
-    //         tokenBaseName,
-    //         symbol,
-    //         decimals
-    //     );
-
-    //     insureeCoin.setReferenceInvestorCoin(investorCoinAddress);
-    //     investorCoin.setReferenceInsureeCoin(address(insureeCoin));
-
-    //     uint256 rateInPercent = investorCoin.getRateInPercent();
-
-    //     insureeCoin.setRateInPercent(rateInPercent);
-
-    //     emit InsureeCoinCreated(msg.sender, insureeCoin);
-
-    //     return insureeCoin;
-    // }
-
 }

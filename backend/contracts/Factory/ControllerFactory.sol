@@ -5,8 +5,8 @@ import "../Controller/Controller.sol";
 contract ControllerFactory {
     event ControllerCreated(
         address indexed sender,
-        string tokenBaseNameInvstor,
-        string tokenBaseNameInsuree,
+        string tokenNameInvestor,
+        string tokenNameInsuree,
         uint256 rateInPercent,
         Controller controller,
         IInsuranceFactory insuranceFactory
@@ -14,21 +14,21 @@ contract ControllerFactory {
 
     function createController(
         IInsuranceFactory insuranceFactory,
-        string memory tokenBaseNameInvstor,
-        string memory tokenBaseNameInsuree,
+        string memory tokenNameInvestor,
+        string memory tokenNameInsuree,
         uint256 rateInPercent
     ) public {
         Controller controller = new Controller(
             insuranceFactory,
-            tokenBaseNameInvstor,
-            tokenBaseNameInsuree,
+            tokenNameInvestor,
+            tokenNameInsuree,
             rateInPercent
         );
 
         emit ControllerCreated(
             msg.sender,
-            tokenBaseNameInvstor,
-            tokenBaseNameInsuree,
+            tokenNameInvestor,
+            tokenNameInsuree,
             rateInPercent,
             controller,
             insuranceFactory

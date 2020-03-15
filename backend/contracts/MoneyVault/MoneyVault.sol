@@ -125,7 +125,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         require(
             _totalInvestorDeposits >=
                 _totalInsureeDeposits.add(factorizedAmount),
-            "invstor amount too low"
+            "investor amount too low"
         );
 
         _insureeDeposits[payee] = _insureeDeposits[payee].add(factorizedAmount);

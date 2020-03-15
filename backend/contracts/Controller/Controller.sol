@@ -4,14 +4,14 @@ import "../Factory/Interfaces/IInsuranceFactory.sol";
 
 contract Controller {
     IInsuranceFactory _insuranceFactory;
-    string _tokenBaseNameInvstor;
-    string _tokenBaseNameInsuree;
+    string _tokenNameInvestor;
+    string _tokenNameInsuree;
     uint256 _rateInPercent;
 
     event InsuranceCreated(
         address indexed sender,
-        string tokenBaseNameInvstor,
-        string tokenBaseNameInsuree,
+        string tokenNameInvestor,
+        string tokenNameInsuree,
         uint256 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
@@ -23,13 +23,13 @@ contract Controller {
 
     constructor(
         IInsuranceFactory insuranceFactory,
-        string memory tokenBaseNameInvstor,
-        string memory tokenBaseNameInsuree,
+        string memory tokenNameInvestor,
+        string memory tokenNameInsuree,
         uint256 rateInPercent
     ) public {
         _insuranceFactory = insuranceFactory;
-        _tokenBaseNameInvstor = tokenBaseNameInvstor;
-        _tokenBaseNameInsuree = tokenBaseNameInsuree;
+        _tokenNameInvestor = tokenNameInvestor;
+        _tokenNameInsuree = tokenNameInsuree;
         _rateInPercent = rateInPercent;
     }
 
@@ -41,8 +41,8 @@ contract Controller {
     ) public {
         (address investorCoin, address insureeCoin) = _insuranceFactory
             .createInsuranceFor(
-            _tokenBaseNameInvstor,
-            _tokenBaseNameInsuree,
+            _tokenNameInvestor,
+            _tokenNameInsuree,
             _rateInPercent,
             insurancePeriodStart,
             insurancePeriodEnd,
@@ -52,8 +52,8 @@ contract Controller {
 
         emit InsuranceCreated(
             msg.sender,
-            _tokenBaseNameInvstor,
-            _tokenBaseNameInsuree,
+            _tokenNameInvestor,
+            _tokenNameInsuree,
             _rateInPercent,
             insurancePeriodStart,
             insurancePeriodEnd,

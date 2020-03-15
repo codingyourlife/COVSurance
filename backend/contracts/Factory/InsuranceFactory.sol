@@ -1,60 +1,60 @@
 pragma solidity ^0.5.5;
 
 import "./MoneyVaultFactory.sol";
-import "./TokenFactory.sol";
-import "../Coins/InvestorCoin.sol";
-import "../Coins/InsureeCoin.sol";
+import "./Interfaces/ITokenFactory.sol";
 import "./Interfaces/IInsuranceFactory.sol";
 
 contract InsuranceFactory is IInsuranceFactory {
-    MoneyVaultFactory _moneyVaultFactory;
-    TokenFactory _tokenFactory;
+    IMoneyVaultFactory _moneyVaultFactory;
+    ITokenFactory _tokenFactory;
 
     event InsuranceCreated(
         address indexed sender,
-        string tokenBaseNameInvstor,
-        string tokenBaseNameInsuree,
+        string tokenNameInvestor,
+        string tokenNameInsuree,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd,
-        InvestorCoin investorCoin,
-        InsureeCoin insureeCoin
+        address investorCoin,
+        address insureeCoin
     );
 
-    constructor() public {
-        _moneyVaultFactory = new MoneyVaultFactory();
-        _tokenFactory = new TokenFactory();
+    constructor(
+        IMoneyVaultFactory moneyVaultFactory,
+        ITokenFactory tokenFactory
+    ) public {
+        _moneyVaultFactory = moneyVaultFactory;
+        _tokenFactory = tokenFactory;
     }
 
     function createInsuranceFor(
-        string calldata tokenBaseNameInvstor,
-        string calldata tokenBaseNameInsuree,
+        string calldata tokenNameInvestor,
+        string calldata tokenNameInsuree,
         uint256 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
     ) external returns (address, address) {
-        MoneyVault moneyVault = _moneyVaultFactory.createMoneyVault(
+        address moneyVault = _moneyVaultFactory.createMoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
             signaturePeriodEnd
         );
 
-        (InvestorCoin investorCoin, InsureeCoin insureeCoin) = _tokenFactory
-            .createCoins(
-            tokenBaseNameInvstor,
-            tokenBaseNameInsuree,
+        (address investorCoin, address insureeCoin) = _tokenFactory.createCoins(
+            tokenNameInvestor,
+            tokenNameInsuree,
             rateInPercent,
-            address(moneyVault)
+            moneyVault
         );
 
         emit InsuranceCreated(
             msg.sender,
-            tokenBaseNameInvstor,
-            tokenBaseNameInsuree,
+            tokenNameInvestor,
+            tokenNameInsuree,
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,

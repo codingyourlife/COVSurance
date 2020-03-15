@@ -1,8 +1,9 @@
 pragma solidity ^0.5.5;
 
 import "../MoneyVault/MoneyVault.sol";
+import "./Interfaces/IMoneyVaultFactory.sol";
 
-contract MoneyVaultFactory {
+contract MoneyVaultFactory is IMoneyVaultFactory {
     event MoneyVaultCreated(address indexed sender, MoneyVault vault);
 
     function createMoneyVault(
@@ -10,7 +11,7 @@ contract MoneyVaultFactory {
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
-    ) public returns (MoneyVault) {
+    ) public returns (address) {
         MoneyVault moneyVault = new MoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
@@ -22,6 +23,6 @@ contract MoneyVaultFactory {
 
         emit MoneyVaultCreated(msg.sender, moneyVault);
 
-        return moneyVault;
+        return address(moneyVault);
     }
 }
