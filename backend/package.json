@@ -6,7 +6,8 @@
   "scripts": {
     "compile": "npx oz compile",
     "test": "npm run-script compile && mocha --exit --recursive",
-    "ganache": "npx ganache-cli"
+    "ganache": "npx ganache-cli",
+    "flatten": "npx truffle-flattener ./contracts/Factory/TokenFactory.sol >&1 > ../artifacts/TokenFactory.min.sol && npx truffle-flattener ./contracts/Factory/InsuranceFactory.sol >&1 > ../artifacts/InsuranceFactory.min.sol"
   },
   "keywords": [],
   "author": "Johannes Mayer",
@@ -20,6 +21,8 @@
     "@openzeppelin/test-helpers": "^0.5.5",
     "chai": "^4.2.0",
     "ganache-cli": "^6.9.1",
-    "mocha": "^7.1.0"
+    "mocha": "^7.1.0",
+    "truffle": "^5.1.17",
+    "truffle-flattener": "^1.4.2"
   }
 }
