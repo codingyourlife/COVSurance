@@ -3,7 +3,7 @@ pragma solidity ^0.5.5;
 import "../Coins/InvestorCoin.sol";
 import "../Coins/InsureeCoin.sol";
 
-contract InsuranceFactory {
+contract TokenFactory {
     event InvestorCoinCreated(address indexed sender, InvestorCoin coin);
     event InsureeCoinCreated(address indexed sender, InsureeCoin coin);
 
