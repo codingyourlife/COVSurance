@@ -12,8 +12,8 @@ contract InsuranceFactory is IInsuranceFactory {
 
     event InsuranceCreated(
         address indexed sender,
-        string tokenBaseNameInvestor,
-        string tokenBaseNameInsuree,
+        string tokenNameInvestor,
+        string tokenNameInsuree,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
@@ -28,8 +28,8 @@ contract InsuranceFactory is IInsuranceFactory {
     }
 
     function createInsuranceFor(
-        string calldata tokenBaseNameInvestor,
-        string calldata tokenBaseNameInsuree,
+        string calldata tokenNameInvestor,
+        string calldata tokenNameInsuree,
         uint256 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
@@ -45,16 +45,16 @@ contract InsuranceFactory is IInsuranceFactory {
 
         (InvestorCoin investorCoin, InsureeCoin insureeCoin) = _tokenFactory
             .createCoins(
-            tokenBaseNameInvestor,
-            tokenBaseNameInsuree,
+            tokenNameInvestor,
+            tokenNameInsuree,
             rateInPercent,
             address(moneyVault)
         );
 
         emit InsuranceCreated(
             msg.sender,
-            tokenBaseNameInvestor,
-            tokenBaseNameInsuree,
+            tokenNameInvestor,
+            tokenNameInsuree,
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
