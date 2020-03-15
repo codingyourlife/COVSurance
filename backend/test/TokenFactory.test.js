@@ -20,7 +20,7 @@ describe("TokenFactory", function() {
       this.tokenFactory = await TokenFactory.new();
     });
 
-    context("InvestorCoin", function() {
+    context("deploy InvestorCoin", function() {
       it("create InvestorCoin", async function() {
         const investorCoinReceipt = await this.tokenFactory.createInvestorCoin(
           "Cov Investor 05/2020 10%",
