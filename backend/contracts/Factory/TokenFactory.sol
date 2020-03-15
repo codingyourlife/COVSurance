@@ -7,17 +7,16 @@ contract TokenFactory {
     event InvestorCoinCreated(address indexed sender, InvestorCoin coin);
     event InsureeCoinCreated(address indexed sender, InsureeCoin coin);
 
-    function createInvestorCoin(
-        string memory tokenBaseName,
+    function createCoins(
+        string memory tokenNameInvestorCoin,
+        string memory tokenNameInsureeCoin,
         uint256 rateInPercent,
         address moneyVault
-    ) public returns (InvestorCoin) {
-        string memory symbol = "COVInv";
-        uint8 decimals = 18;
+    ) public returns (InvestorCoin, InsureeCoin) {
         InvestorCoin investorCoin = new InvestorCoin(
-            tokenBaseName,
-            symbol,
-            decimals
+            tokenNameInvestorCoin,
+            "COVInv",
+            18
         );
 
         investorCoin.setRateInPercent(rateInPercent);
@@ -25,31 +24,69 @@ contract TokenFactory {
 
         emit InvestorCoinCreated(msg.sender, investorCoin);
 
-        return investorCoin;
-    }
+        ///
 
-    function createInsureeCoin(
-        string memory tokenBaseName,
-        address investorCoinAddress
-    ) public returns (InsureeCoin) {
-        string memory symbol = "COVIns";
-        uint8 decimals = 18;
-        InvestorCoin investorCoin = InvestorCoin(investorCoinAddress);
         InsureeCoin insureeCoin = new InsureeCoin(
-            tokenBaseName,
-            symbol,
-            decimals
+            tokenNameInsureeCoin,
+            "COVIns",
+            18
         );
 
-        insureeCoin.setReferenceInvestorCoin(investorCoinAddress);
+        insureeCoin.setReferenceInvestorCoin(address(investorCoin));
         investorCoin.setReferenceInsureeCoin(address(insureeCoin));
-
-        uint256 rateInPercent = investorCoin.getRateInPercent();
 
         insureeCoin.setRateInPercent(rateInPercent);
 
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 
-        return insureeCoin;
+        return (investorCoin, insureeCoin);
+
     }
+
+    // function createInvestorCoin(
+    //     string memory tokenBaseName,
+    //     uint256 rateInPercent,
+    //     address moneyVault
+    // ) public returns (InvestorCoin) {
+    //     string memory symbol = "COVInv";
+    //     uint8 decimals = 18;
+    //     InvestorCoin investorCoin = new InvestorCoin(
+    //         tokenBaseName,
+    //         symbol,
+    //         decimals
+    //     );
+
+    //     investorCoin.setRateInPercent(rateInPercent);
+    //     investorCoin.setMoneyVault(moneyVault);
+
+    //     emit InvestorCoinCreated(msg.sender, investorCoin);
+
+    //     return investorCoin;
+    // }
+
+    // function createInsureeCoin(
+    //     string memory tokenBaseName,
+    //     address investorCoinAddress
+    // ) public returns (InsureeCoin) {
+    //     string memory symbol = "COVIns";
+    //     uint8 decimals = 18;
+    //     InvestorCoin investorCoin = InvestorCoin(investorCoinAddress);
+    //     InsureeCoin insureeCoin = new InsureeCoin(
+    //         tokenBaseName,
+    //         symbol,
+    //         decimals
+    //     );
+
+    //     insureeCoin.setReferenceInvestorCoin(investorCoinAddress);
+    //     investorCoin.setReferenceInsureeCoin(address(insureeCoin));
+
+    //     uint256 rateInPercent = investorCoin.getRateInPercent();
+
+    //     insureeCoin.setRateInPercent(rateInPercent);
+
+    //     emit InsureeCoinCreated(msg.sender, insureeCoin);
+
+    //     return insureeCoin;
+    // }
+
 }

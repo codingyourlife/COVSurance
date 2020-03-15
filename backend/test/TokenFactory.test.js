@@ -23,8 +23,9 @@ describe("TokenFactory", function() {
 
     context("deploy InvestorCoin", function() {
       it("create InvestorCoin", async function() {
-        const investorCoinReceipt = await this.tokenFactory.createInvestorCoin(
+        const investorCoinReceipt = await this.tokenFactory.createCoins(
           "Cov Investor 05/2020 10%",
+          "Cov Insuree 05/2020 10%",
           "10",
           moneyVault,
           {
@@ -40,11 +41,11 @@ describe("TokenFactory", function() {
 
     context("InsureeCoin", function() {
       it("create InsureeCoin", async function() {
-        const investorCoin = await InvestorCoin.new("Demo", "DEMO", "18");
-        await investorCoin.transferOwnership(this.tokenFactory.address);
-        const insureeCoinReceipt = await this.tokenFactory.createInsureeCoin(
+        const insureeCoinReceipt = await this.tokenFactory.createCoins(
+          "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
-          investorCoin.address,
+          "10",
+          moneyVault,
           {
             from: unknown
           }

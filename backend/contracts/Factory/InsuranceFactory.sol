@@ -43,15 +43,12 @@ contract InsuranceFactory is IInsuranceFactory {
             signaturePeriodEnd
         );
 
-        InvestorCoin investorCoin = _tokenFactory.createInvestorCoin(
+        (InvestorCoin investorCoin, InsureeCoin insureeCoin) = _tokenFactory
+            .createCoins(
             tokenBaseNameInvstor,
+            tokenBaseNameInsuree,
             rateInPercent,
             address(moneyVault)
-        );
-
-        InsureeCoin insureeCoin = _tokenFactory.createInsureeCoin(
-            tokenBaseNameInsuree,
-            address(investorCoin)
         );
 
         emit InsuranceCreated(
