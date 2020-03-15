@@ -46,6 +46,8 @@ open it via https://remix.ethereum.org/#optimize=true&evmVersion=null&version=so
 2. Deploy TokenFactory (and save addreses to Locator.json)
 3. Deploy InsuranceFactory and use MoneyVaultFactory and TokenFactory addresses as deploy parameters (and save addreses to Locator.json)
 
+Select contract of choice and press ABI button in remix IDE and save it to \*.abi.json into artifacts folder
+
 ## Architecture
 
 ### ClassDiagram
