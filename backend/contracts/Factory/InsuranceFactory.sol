@@ -19,7 +19,8 @@ contract InsuranceFactory is IInsuranceFactory {
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd,
         address investorCoin,
-        address insureeCoin
+        address insureeCoin,
+        address moneyVault
     );
 
     constructor(address moneyVaultFactory, address tokenFactory) public {
@@ -65,7 +66,8 @@ contract InsuranceFactory is IInsuranceFactory {
             signaturePeriodStart,
             signaturePeriodEnd,
             investorCoin,
-            insureeCoin
+            insureeCoin,
+            moneyVault
         );
 
         return (address(investorCoin), address(insureeCoin));
