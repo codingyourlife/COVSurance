@@ -9,7 +9,8 @@ contract TokenFactory {
 
     function createInvestorCoin(
         string memory tokenBaseName,
-        uint256 rateInPercent
+        uint256 rateInPercent,
+        address moneyVault
     ) public returns (InvestorCoin) {
         string memory symbol = "COVInv";
         uint8 decimals = 18;
@@ -20,6 +21,7 @@ contract TokenFactory {
         );
 
         investorCoin.setRateInPercent(rateInPercent);
+        investorCoin.setMoneyVault(moneyVault);
 
         emit InvestorCoinCreated(msg.sender, investorCoin);
 

@@ -9,6 +9,7 @@ contract InsureeCoin is ERC20, ERC20Detailed, Ownable {
     constructor(string memory name, string memory symbol, uint8 decimals)
         public
         ERC20Detailed(name, symbol, decimals)
+        Ownable()
     {}
 
     IERC20 private _investorCoin;

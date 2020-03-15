@@ -14,7 +14,7 @@ const TokenFactory = contract.fromArtifact("TokenFactory");
 const InvestorCoin = contract.fromArtifact("InvestorCoin");
 
 describe("TokenFactory", function() {
-  const [controller, unknown] = accounts;
+  const [controller, unknown, moneyVault] = accounts;
 
   context("once deployed", function() {
     beforeEach(async function() {
@@ -26,6 +26,7 @@ describe("TokenFactory", function() {
         const investorCoinReceipt = await this.tokenFactory.createInvestorCoin(
           "Cov Investor 05/2020 10%",
           "10",
+          moneyVault,
           {
             from: unknown
           }
