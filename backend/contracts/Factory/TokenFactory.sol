@@ -36,6 +36,9 @@ contract TokenFactory is ITokenFactory {
 
         insureeCoin.setRateInPercent(rateInPercent);
 
+        investorCoin.transferOwnership(msg.sender);
+        insureeCoin.transferOwnership(msg.sender);
+
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 
         return (address(investorCoin), address(insureeCoin));

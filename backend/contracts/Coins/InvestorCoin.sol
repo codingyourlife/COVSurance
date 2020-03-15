@@ -5,13 +5,20 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./Interfaces/IInvestorCoin.sol";
+import "./Interfaces/ITransferableOwnership.sol";
 import "../MoneyVault/Interfaces/IMoneyVaultInvestor.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
 
-contract InvestorCoin is ERC20, ERC20Detailed, Ownable, IInvestorCoin {
+contract InvestorCoin is
+    IInvestorCoin,
+    ITransferableOwnership,
+    ERC20Mintable,
+    ERC20Detailed,
+    Ownable
+{
     constructor(string memory name, string memory symbol, uint8 decimals)
         public
         ERC20Detailed(name, symbol, decimals)
-        Ownable()
     {}
 
     uint256 private _rateInPercent;

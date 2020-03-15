@@ -3,6 +3,7 @@ pragma solidity ^0.5.5;
 import "./MoneyVaultFactory.sol";
 import "./Interfaces/ITokenFactory.sol";
 import "./Interfaces/IInsuranceFactory.sol";
+import "../Coins/Interfaces/ITransferableOwnership.sol";
 
 contract InsuranceFactory is IInsuranceFactory {
     IMoneyVaultFactory _moneyVaultFactory;
@@ -51,6 +52,9 @@ contract InsuranceFactory is IInsuranceFactory {
             investorCoin,
             insureeCoin
         );
+
+        ITransferableOwnership(investorCoin).transferOwnership(moneyVault);
+        ITransferableOwnership(insureeCoin).transferOwnership(moneyVault);
 
         emit InsuranceCreated(
             msg.sender,
