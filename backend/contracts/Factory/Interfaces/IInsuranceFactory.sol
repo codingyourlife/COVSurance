@@ -8,5 +8,5 @@ contract IInsuranceFactory {
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
-    ) external;
+    ) external returns (address investorCoin, address insureeCoin);
 }

@@ -34,7 +34,7 @@ contract InsuranceFactory is IInsuranceFactory {
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
-    ) external {
+    ) external returns (address, address) {
         _moneyVaultFactory.createMoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
@@ -61,6 +61,8 @@ contract InsuranceFactory is IInsuranceFactory {
             investorCoin,
             insureeCoin
         );
+
+        return (address(investorCoin), address(insureeCoin));
     }
 
 }

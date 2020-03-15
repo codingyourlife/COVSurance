@@ -14,7 +14,9 @@ contract Controller {
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
-        uint256 signaturePeriodEnd
+        uint256 signaturePeriodEnd,
+        address investorCoin,
+        address insureeCoin
     );
 
     constructor(
@@ -33,7 +35,8 @@ contract Controller {
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
     ) public {
-        _insuranceFactory.createInsuranceFor(
+        (address investorCoin, address insureeCoin) = _insuranceFactory
+            .createInsuranceFor(
             _tokenBaseNameInvstor,
             _tokenBaseNameInsuree,
             insurancePeriodStart,
@@ -49,7 +52,9 @@ contract Controller {
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
-            signaturePeriodEnd
+            signaturePeriodEnd,
+            investorCoin,
+            insureeCoin
         );
     }
 }
