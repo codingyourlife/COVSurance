@@ -23,40 +23,150 @@
       </h3>
 
       <mat-accordion class="full-width">
-        <mat-expansion-panel>
+        <mat-expansion-panel #inputPanel (opened)="loadData()">
           <mat-expansion-panel-header>
             <mat-panel-description>
               Ich möchte eine Versicherung abschließen
             </mat-panel-description>
           </mat-expansion-panel-header>
 
-          <form fxLayout="column" fxLayoutAlign="space-around center">
+          <form
+            [formGroup]="insuranceForm"
+            fxLayout="column"
+            fxLayoutAlign="space-around center"
+          >
             <mat-form-field appearance="outline" style="width: 100%;">
               <mat-label>Risiko</mat-label>
-              <input type="text" matInput placeholder="Risiko" />
+              <mat-select formControlName="risk">
+                <mat-option
+                  *ngFor="let risk of possibleRisks"
+                  value="{{ risk }}"
+                >
+                  {{ risk }}
+                </mat-option>
+              </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="width: 100%;">
               <mat-label>Zeitraum</mat-label>
-              <mat-select>
-                <mat-option value="may">Mai 2020</mat-option>
-                <mat-option value="june">Juni 2020</mat-option>
-                <mat-option value="july">Juli 2020</mat-option>
+              <mat-select formControlName="timeframe">
+                <mat-option
+                  *ngFor="let time of possibleTimeframes"
+                  value="{{ time }}"
+                >
+                  {{ time }}
+                </mat-option>
               </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="width: 100%;">
               <mat-label>Volumen</mat-label>
-              <input type="number" matInput placeholder="Volumen" />
+              <input
+                type="number"
+                matInput
+                placeholder="Volumen"
+                formControlName="volume"
+              />
               <span matSuffix>ganze Euro</span>
+              <mat-error>Mindest Volumen 50€</mat-error>
             </mat-form-field>
           </form>
+          <mat-progress-bar
+            style="width: 100%;"
+            *ngIf="calculating"
+            [mode]="'indeterminate'"
+          ></mat-progress-bar>
+          <mat-error *ngIf="calculationResult && !calculationResult.possible">
+            Berechnung nicht möglich, Volumen zu hoch.
+          </mat-error>
           <mat-action-row fxLayoutAlign="center center" fxlayout="row">
-            <button mat-raised-button color="primary">Berechnen</button>
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="insuranceForm.invalid || calculating"
+              (click)="calculateInvestment()"
+            >
+              Berechnen
+            </button>
           </mat-action-row>
         </mat-expansion-panel>
 
-        <mat-expansion-panel>
+        <mat-expansion-panel
+          #calculationPanel
+          [disabled]="!calculationResult || !calculationResult.possible"
+        >
+          <mat-expansion-panel-header>
+            <mat-panel-description>
+              Berechnete Versicherung
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div
+            class="full-width"
+            fxLayout="column"
+            fxLayoutAlign="center center"
+            *ngIf="calculationResult"
+          >
+            <div
+              class="full-width"
+              fxlayout="row"
+              fxLayoutAlign="space-between center"
+              style="padding: 16px;"
+            >
+              <div class="full-width">
+                Prämie gesamt
+              </div>
+              <div
+                class="full-width"
+                style="border-left: 1px solid gray; padding-left: 16px;"
+              >
+                {{ calculationResult.totalBonus }} €
+              </div>
+            </div>
+
+            <div
+              class="full-width"
+              fxlayout="row"
+              fxLayoutAlign="space-between center"
+              style="padding: 16px;"
+            >
+              <div class="full-width">
+                Durchschnittliche Prämie %
+              </div>
+              <div
+                class="full-width"
+                style="border-left: 1px solid gray; padding-left: 16px;"
+              >
+                {{ calculationResult.averageBonusPercent * 100 }} %
+              </div>
+            </div>
+
+            <div
+              class="full-width"
+              fxlayout="row"
+              fxLayoutAlign="space-between center"
+              style="padding: 16px;"
+            >
+              <div class="full-width">
+                Aufschlüsselung
+              </div>
+            </div>
+
+            <div class="mat-box-shadow margin-333" style="width: 98%;">
+              <ngx-datatable
+                class="material bg-white"
+                [columnMode]="'force'"
+                [headerHeight]="50"
+                [footerHeight]="50"
+                [rowHeight]="50"
+                [limit]="8"
+                [rows]="calculationResult.subInvestments"
+                [columns]="columns"
+              ></ngx-datatable>
+            </div>
+          </div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel (opened)="loadData()">
           <mat-expansion-panel-header>
             <mat-panel-description>
               Aktuelle Versicherungsangebote
@@ -84,7 +194,7 @@
                 [footerHeight]="50"
                 [rowHeight]="50"
                 [limit]="8"
-                [rows]="fakeData"
+                [rows]="data"
                 [columns]="columns"
               ></ngx-datatable>
             </div>
