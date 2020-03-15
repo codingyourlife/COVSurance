@@ -1,6 +1,6 @@
 // File: @openzeppelin/contracts/math/SafeMath.sol
 
-pragma solidity ^0.5.0;
+pragma solidity ^0.5.5;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -171,8 +171,6 @@ library SafeMath {
 
 // File: @openzeppelin/contracts/GSN/Context.sol
 
-pragma solidity ^0.5.0;
-
 /*
  * @dev Provides information about the current execution context, including the
  * sender of the transaction and its data. While these are generally available
@@ -200,8 +198,6 @@ contract Context {
 }
 
 // File: @openzeppelin/contracts/ownership/Secondary.sol
-
-pragma solidity ^0.5.0;
 
 /**
  * @dev A Secondary contract can only be used by its primary account (the one that created it).
@@ -457,12 +453,13 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         );
         require(_signaturePeriodStart <= now, "too early");
         require(_signaturePeriodEnd >= now, "too late");
+        require(address(_investorCoin) != address(0), "no investorCoin");
 
         _investorDeposits[payee] = _investorDeposits[payee].add(msg.value);
         _totalInvestorDeposits = _totalInvestorDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        // _investorCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
+        _investorCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
 
         emit DepositedByInvestor(payee, msg.value);
 
@@ -481,6 +478,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         );
         require(_signaturePeriodStart <= now, "too early");
         require(_signaturePeriodEnd >= now, "too late");
+        require(address(_insureeCoin) != address(0), "no insureeCoin");
 
         require(
             _totalInvestorDeposits >= _totalInsureeDeposits.add(msg.value),
@@ -491,7 +489,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        // _insureeCoin.mint(payee, factorizedAmount.mul(1000)); //TODO: mul1000 is just for testnet
+        _insureeCoin.mint(payee, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
 
         emit DepositedByInsuree(payee, msg.value);
 
@@ -675,7 +673,8 @@ contract InsuranceFactory is IInsuranceFactory {
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd,
         address investorCoin,
-        address insureeCoin
+        address insureeCoin,
+        address moneyVault
     );
 
     constructor(address moneyVaultFactory, address tokenFactory) public {
@@ -721,7 +720,8 @@ contract InsuranceFactory is IInsuranceFactory {
             signaturePeriodStart,
             signaturePeriodEnd,
             investorCoin,
-            insureeCoin
+            insureeCoin,
+            moneyVault
         );
 
         return (address(investorCoin), address(insureeCoin));

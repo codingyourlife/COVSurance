@@ -7,7 +7,7 @@
     "compile": "npx oz compile",
     "test": "npm run-script compile && mocha --exit --recursive",
     "ganache": "npx ganache-cli",
-    "flatten": "npx truffle-flattener ./contracts/Factory/TokenFactory.sol >&1 > ../artifacts/TokenFactory.min.sol && npx truffle-flattener ./contracts/Factory/InsuranceFactory.sol >&1 > ../artifacts/InsuranceFactory.min.sol"
+    "flatten": "npx truffle-flattener ./contracts/Factory/TokenFactory.sol >&1 > ../frontend/src/assets/artifacts/TokenFactory.min.sol && npx truffle-flattener ./contracts/Factory/InsuranceFactory.sol >&1 > ../frontend/src/assets/artifacts/InsuranceFactory.min.sol"
   },
   "keywords": [],
   "author": "Johannes Mayer",
