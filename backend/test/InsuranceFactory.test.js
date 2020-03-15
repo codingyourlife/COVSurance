@@ -23,9 +23,10 @@ describe("InsuranceFactory", function() {
     beforeEach(async function() {
       const moneyVaultFactory = await MoneyVaultFactory.new();
       const tokenFactory = await TokenFactory.new();
+
       this.insuranceFactory = await InsuranceFactory.new(
-        moneyVaultFactory.address,
-        tokenFactory.address
+        moneyVaultFactory.address.toString(),
+        tokenFactory.address.toString()
       );
     });
 
@@ -34,13 +35,12 @@ describe("InsuranceFactory", function() {
         const deployReceipt = await this.insuranceFactory.createInsuranceFor(
           "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
-          "10",
           "0",
           "1",
           "2",
-          "3"
+          "3",
+          "10"
         );
-
         expectEvent(deployReceipt, "InsuranceCreated");
       });
     });

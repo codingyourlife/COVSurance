@@ -10,16 +10,13 @@ contract TokenFactory is ITokenFactory {
 
     function createCoins(
         string calldata tokenNameInvestorCoin,
-        string calldata tokenNameInsureeCoin,
-        uint256 rateInPercent
+        string calldata tokenNameInsureeCoin
     ) external returns (address, address) {
         InvestorCoin investorCoin = new InvestorCoin(
             tokenNameInvestorCoin,
             "COVInv",
             18
         );
-
-        investorCoin.setRateInPercent(rateInPercent);
 
         emit InvestorCoinCreated(msg.sender, investorCoin);
 
@@ -33,8 +30,6 @@ contract TokenFactory is ITokenFactory {
 
         insureeCoin.setReferenceInvestorCoin(address(investorCoin));
         investorCoin.setReferenceInsureeCoin(address(insureeCoin));
-
-        insureeCoin.setRateInPercent(rateInPercent);
 
         investorCoin.transferOwnership(msg.sender);
         insureeCoin.transferOwnership(msg.sender);

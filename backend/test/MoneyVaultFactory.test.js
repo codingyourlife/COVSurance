@@ -29,6 +29,7 @@ describe("MoneyVaultFactory", function() {
           "3",
           zero_address,
           zero_address,
+          "10",
           { from: unknown }
         );
 

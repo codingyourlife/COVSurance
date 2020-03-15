@@ -33,7 +33,8 @@ describe("MoneyVault", function() {
         signaturePeriodStart,
         signaturePeriodEnd,
         zero_address,
-        zero_address
+        zero_address,
+        "10"
       );
     });
 
@@ -66,7 +67,8 @@ describe("MoneyVault", function() {
           signaturePeriodStart,
           signaturePeriodEnd,
           zero_address,
-          zero_address
+          zero_address,
+          "10"
         );
 
         await expectRevert(
@@ -94,7 +96,8 @@ describe("MoneyVault", function() {
           signaturePeriodStart,
           signaturePeriodEnd,
           zero_address,
-          zero_address
+          zero_address,
+          "10"
         );
 
         await expectRevert(
@@ -136,7 +139,8 @@ describe("MoneyVault", function() {
           signaturePeriodStart,
           signaturePeriodEnd,
           zero_address,
-          zero_address
+          zero_address,
+          "10"
         );
 
         await expectRevert(
@@ -249,7 +253,8 @@ describe("MoneyVault", function() {
           signaturePeriodStart,
           signaturePeriodEnd,
           zero_address,
-          zero_address
+          zero_address,
+          "10"
         );
 
         await tmpMoneyVault.investorDeposits(investor1, {

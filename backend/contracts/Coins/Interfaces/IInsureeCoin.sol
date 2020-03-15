@@ -6,8 +6,4 @@ interface IInsureeCoin {
     function getInvestorCoin() external view returns (IERC20 investorCoin);
 
     function setReferenceInvestorCoin(address investorCoin) external;
-
-    function getRateInPercent() external view returns (uint256 rateInPercent);
-
-    function setRateInPercent(uint256 rateInPercent) external;
 }

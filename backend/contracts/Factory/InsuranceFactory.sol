@@ -22,27 +22,23 @@ contract InsuranceFactory is IInsuranceFactory {
         address insureeCoin
     );
 
-    constructor(
-        IMoneyVaultFactory moneyVaultFactory,
-        ITokenFactory tokenFactory
-    ) public {
-        _moneyVaultFactory = moneyVaultFactory;
-        _tokenFactory = tokenFactory;
+    constructor(address moneyVaultFactory, address tokenFactory) public {
+        _moneyVaultFactory = IMoneyVaultFactory(moneyVaultFactory);
+        _tokenFactory = ITokenFactory(tokenFactory);
     }
 
     function createInsuranceFor(
         string calldata tokenNameInvestor,
         string calldata tokenNameInsuree,
-        uint256 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
-        uint256 signaturePeriodEnd
+        uint256 signaturePeriodEnd,
+        uint8 rateInPercent
     ) external returns (address, address) {
         (address investorCoin, address insureeCoin) = _tokenFactory.createCoins(
             tokenNameInvestor,
-            tokenNameInsuree,
-            rateInPercent
+            tokenNameInsuree
         );
 
         address moneyVault = _moneyVaultFactory.createMoneyVault(
@@ -51,7 +47,8 @@ contract InsuranceFactory is IInsuranceFactory {
             signaturePeriodStart,
             signaturePeriodEnd,
             investorCoin,
-            insureeCoin
+            insureeCoin,
+            rateInPercent
         );
 
         ITransferableOwnership(investorCoin).transferOwnership(moneyVault);

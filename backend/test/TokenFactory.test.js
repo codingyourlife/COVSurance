@@ -26,7 +26,6 @@ describe("TokenFactory", function() {
         const investorCoinReceipt = await this.tokenFactory.createCoins(
           "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
-          "10",
           {
             from: unknown
           }
@@ -43,7 +42,6 @@ describe("TokenFactory", function() {
         const insureeCoinReceipt = await this.tokenFactory.createCoins(
           "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
-          "10",
           {
             from: unknown
           }

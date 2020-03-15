@@ -6,13 +6,13 @@ contract Controller {
     IInsuranceFactory _insuranceFactory;
     string _tokenNameInvestor;
     string _tokenNameInsuree;
-    uint256 _rateInPercent;
+    uint8 _rateInPercent;
 
     event InsuranceCreated(
         address indexed sender,
         string tokenNameInvestor,
         string tokenNameInsuree,
-        uint256 rateInPercent,
+        uint8 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
@@ -25,7 +25,7 @@ contract Controller {
         IInsuranceFactory insuranceFactory,
         string memory tokenNameInvestor,
         string memory tokenNameInsuree,
-        uint256 rateInPercent
+        uint8 rateInPercent
     ) public {
         _insuranceFactory = insuranceFactory;
         _tokenNameInvestor = tokenNameInvestor;
@@ -43,11 +43,11 @@ contract Controller {
             .createInsuranceFor(
             _tokenNameInvestor,
             _tokenNameInsuree,
-            _rateInPercent,
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
-            signaturePeriodEnd
+            signaturePeriodEnd,
+            _rateInPercent
         );
 
         emit InsuranceCreated(

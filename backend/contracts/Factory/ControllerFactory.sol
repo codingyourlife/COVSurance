@@ -7,7 +7,7 @@ contract ControllerFactory {
         address indexed sender,
         string tokenNameInvestor,
         string tokenNameInsuree,
-        uint256 rateInPercent,
+        uint8 rateInPercent,
         Controller controller,
         IInsuranceFactory insuranceFactory
     );
@@ -16,7 +16,7 @@ contract ControllerFactory {
         IInsuranceFactory insuranceFactory,
         string memory tokenNameInvestor,
         string memory tokenNameInsuree,
-        uint256 rateInPercent
+        uint8 rateInPercent
     ) public {
         Controller controller = new Controller(
             insuranceFactory,
