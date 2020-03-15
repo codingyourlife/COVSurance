@@ -18,15 +18,15 @@
   >
     <!-- Right side content -->
     <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
-      <h3 class="mat-color-accent">
-        Mein Wirtschaftliches Risiko absichern
-      </h3>
+      <h2>
+        Mein wirtschaftliches Risiko absichern
+      </h2>
 
       <mat-accordion class="full-width">
         <mat-expansion-panel #inputPanel (opened)="loadData()">
           <mat-expansion-panel-header>
             <mat-panel-description>
-              Ich möchte eine Versicherung abschließen
+              Ich möchte mein wirtschaftliches Risiko absichern
             </mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -36,7 +36,7 @@
             fxLayoutAlign="space-around center"
           >
             <mat-form-field appearance="outline" style="width: 100%;">
-              <mat-label>Risiko</mat-label>
+              <mat-label>Absicherung gegen</mat-label>
               <mat-select formControlName="risk">
                 <mat-option
                   *ngFor="let risk of possibleRisks"
@@ -78,6 +78,31 @@
           <mat-error *ngIf="calculationResult && !calculationResult.possible">
             Berechnung nicht möglich, Volumen zu hoch.
           </mat-error>
+          <div class="text-muted">
+            <p>
+              Ich bestätige, dass ich ein Risiko im Zusammenhang mit einer
+              möglichen CoV-bedingten Betriebsunterbrechung oder einem
+              Veranstaltungsausfall in meinem Unternehmen identifiziert habe und
+              in dieser Höhe absichern möchte.
+            </p>
+            <p>
+              Die Prämie wird sofort fällig. Die Versicherungssumme wird
+              ausbezahlt, sollte an mehr als 10 Tagen im versicherten Monat ein
+              staatlich angeordneter Ausnahmezustand für ganz Österreich gelten,
+              unabhängig davon ob in meinem Unternehmen tatsächlich ein Schaden
+              eingetreten ist (schnelle & unbürokratische Auszahlung von
+              Versicherungsleistungen). Trifft dies nicht zu, läuft die
+              Versicherung mit Ende des gewählten Monats ohne Auszahlung aus.
+            </p>
+
+            <p class="mat-color-danger">
+              <mat-error>
+                ACHTUNG: dies ist ein Demo, es fließt kein Geld, es wird keine
+                tatsächliche Versicherung abgeschlossen. Dies ist eine Software
+                zur Illustration
+              </mat-error>
+            </p>
+          </div>
           <mat-action-row fxLayoutAlign="center center" fxlayout="row">
             <button
               mat-raised-button
@@ -85,7 +110,7 @@
               [disabled]="insuranceForm.invalid || calculating"
               (click)="calculateInvestment()"
             >
-              Berechnen
+              berechnen
             </button>
           </mat-action-row>
         </mat-expansion-panel>

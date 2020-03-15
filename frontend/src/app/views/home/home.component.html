@@ -17,9 +17,18 @@
     style="width: 60%; margin-bottom: 32px; margin-top: 160px; max-width: 600px; background: white;"
   >
     <!-- Right side content -->
-    <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
-      <h1>COVSurance</h1>
-      <p>Demofall zur Absicherung von Pandemiebedingten finanziellen Schäden</p>
+    <div
+      style="padding:16px 32px;"
+      fxLayout="column"
+      fxLayoutAlign="center center"
+    >
+      <h1>CoVSurance</h1>
+      <p>
+        Demofall (ACHTUNG: keine echte Versicherung) zur Illustration einer
+        Pandemie-bedingten Betriebsunterbrechungsversicherung mit Smart
+        Contracts, direkt vom Risikokapitalgeber zum Versicherungsnehmer, ohne
+        Umwege
+      </p>
       <p>Sie können entweder Investieren oder Versichern</p>
     </div>
     <div
@@ -36,21 +45,23 @@
   >
     <button
       mat-raised-button
-      style="width: 100%; height: 100px; margin: 16px;"
+      class="highlight-on-hover"
+      style="width: 100%; height: 100px; margin: 16px; font-size: 26px;"
       fxLayout="column"
       fxLayoutAlign="center center"
       routerLink="/invest"
     >
-      Investieren
+      investieren
     </button>
     <button
       mat-raised-button
-      style="width: 100%; height: 100px; margin: 16px;"
+      class="highlight-on-hover"
+      style="width: 100%; height: 100px; margin: 16px;  font-size: 26px;"
       fxLayout="column"
       fxLayoutAlign="center center"
       routerLink="/insure"
     >
-      Versichern
+      versichern
     </button>
   </div>
 
@@ -59,8 +70,8 @@
     style="width: 60%; max-width: 600px;"
     fxLayoutAlign="space-around center"
   >
-    <mat-card
-      style="width: 100%; height: 100px;"
+    <div
+      style="width: 100%; height: 100px; padding: 16px; margin: 0.5rem;"
       fxLayout="column"
       fxLayoutAlign="center center"
     >
@@ -69,12 +80,12 @@
         fxLayout="column"
         fxLayoutAlign="center center"
       >
-        <mat-icon>attach_money</mat-icon>
-        Text
+        <mat-icon>fast_forward</mat-icon>
+        <span style="margin-top: 5px;">schnell</span>
       </mat-card-content>
-    </mat-card>
-    <mat-card
-      style="width: 100%; height: 100px;"
+    </div>
+    <div
+      style="width: 100%; height: 100px; padding: 16px; margin: 0.5rem;"
       fxLayout="column"
       fxLayoutAlign="center center"
     >
@@ -83,12 +94,12 @@
         fxLayout="column"
         fxLayoutAlign="center center"
       >
-        <mat-icon>attach_money</mat-icon>
-        Text
+        <mat-icon>compare_arrows</mat-icon>
+        <span style="margin-top: 5px;">direkt</span>
       </mat-card-content>
-    </mat-card>
-    <mat-card
-      style="width: 100%; height: 100px;"
+    </div>
+    <div
+      style="width: 100%; height: 100px; padding: 16px; margin: 0.5rem;"
       fxLayout="column"
       fxLayoutAlign="center center"
     >
@@ -97,28 +108,62 @@
         fxLayout="column"
         fxLayoutAlign="center center"
       >
-        <mat-icon>attach_money</mat-icon>
-        Text
+        <mat-icon>enhanced_encryption</mat-icon>
+        <span style="margin-top: 5px;">absichern</span>
       </mat-card-content>
-    </mat-card>
+    </div>
   </div>
 
   <div
     fxLayout="row"
-    style="width: 60%; margin-top: 32px; max-width: 600px;"
+    style="width: 60%; max-width: 600px;"
     fxLayoutAlign="center center"
   >
     <mat-card>
-      <mat-card-content>
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-        eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-        amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-        nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-        ipsum dolor sit amet.
+      <mat-card-content style="padding: 16px 32px;">
+        <div>
+          Mit kleinen Beiträgen Unternehmen Planungssicherheit geben
+        </div>
+        <div>
+          <mat-error>++Demo (keine echte Versicherung) ++</mat-error>
+        </div>
+        <p>
+          Diese Showcase ist im Zuge eines Hackathons der Startups der Strada
+          del Startup in Linz zum Thema "Lösungen für die Corona-Krise" im
+          Zeitraum 13.-15.3.2020 entstanden und wurde von finothek (link auf
+          finothek.io), Markus Waghubinger, Johannes Mayer, CodingYourLife (link
+          auf www.codingyourlife.at) und Daniel Waghubinger entwickelt.
+        </p>
+
+        <p>
+          Viele Unternehmen erleiden wirtschaftlichen Schaden durch den
+          Coronavirus und die Einflüsse auf das tägliche (Wirtschafts-)Leben.
+          Versicherungen können dieses Risiko leider nicht übernehmen, da
+          konzentrierte Katastrophenrisken die Solvenz der
+          Versicherungsgesellschaften selbst gefährden würden. Solche
+          Versicherungsrisiken können jedoch auf den Kapitalmarkt übertragen
+          werden - sog. Katastrophenanleihen können aufgelegt werden - wo
+          risikobereite Investoren Kapital für die Übernahme des Risikos gegen
+          Zins/Prämie zur Verfügung stellen.
+        </p>
+
+        <p>
+          Dies ist ein Showcase wie der Prozess der Absicherung von Unternehmen
+          über Versicherungsgesellschaft, Rückversicherung, Investmentbank und
+          Investoren durch Technologie vereinfacht werden kann und Investoren
+          ohne Umwege direkt Risikokapital für Absicherungs-suchende Unternehmen
+          zur Verfügung stellen können.
+        </p>
+
+        <div>
+          Einschränkung zum Showcase:
+        </div>
+        <p>
+          Je kurzfristiger die Verträge desto schwerer versicherbar und die
+          Krise ist schon da. Kurzfristige Verträge können somit
+          realistischerweise nicht zustande kommen, für Verträge ab Juni/Juli
+          2020 gäbe es voraussichtlich wieder einen funktionierenden Markt.
+        </p>
       </mat-card-content>
     </mat-card>
   </div>

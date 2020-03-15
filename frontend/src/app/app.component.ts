@@ -20,7 +20,7 @@ import { LayoutService } from './shared/services/layout.service'
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  appTitle = 'COVSurance'
+  appTitle = 'CoVSurance'
   pageTitle = ''
 
   constructor(

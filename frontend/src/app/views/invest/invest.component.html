@@ -18,10 +18,12 @@
   >
     <!-- Right side content -->
     <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
-      <h3 class="mat-color-accent">
+      <h2>
         Investieren um anderen Sicherheit zu geben.
-      </h3>
-      <p class="text-muted">Bereits ab 50€</p>
+      </h2>
+      <p class="text-muted">
+        bereits ab 50 Euro investieren und gemeinsam Unternehmen absichern
+      </p>
       <form
         [formGroup]="investForm"
         fxLayout="column"
@@ -29,12 +31,14 @@
       >
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>Risiko</mat-label>
-          <input
-            formControlName="risk"
-            type="text"
-            matInput
-            placeholder="Risiko"
-          />
+          <mat-select formControlName="risk">
+            <mat-option value="CoV-Betriebsunterbrechung">
+              CoV-Betriebsunterbrechung
+            </mat-option>
+            <mat-option value="CoV-Veranstaltungsausfall">
+              CoV-Veranstaltungsausfall
+            </mat-option>
+          </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%;">
@@ -91,15 +95,39 @@
         fxLayoutAlign="center center"
       >
         <p>
-          Mit der Übernahme des Risiko ermögliche ich Veranstaltern ihr
-          finanzielles Risiko einer Absage von Events aufgrund öffentlicher
-          Veranstaltungsverbote abzusichern und somit existenzielle Risiken, die
-          von Versicherungen nicht getragen werden können, von der Crowd
-          übernehmen zu lassen. Die Crowd lässt sich dafür mit einer
-          individuellen Risikoübernahmeprämie bezahlen, die jeder für sich
-          selbst bestimmen kann.
+          <mat-error>
+            ACHTUNG: dies ist ein Demo, es fließt kein Geld, es wird keine
+            tatsächliche Versicherung abgeschlossen. Dies ist eine Software zur
+            Illustration, der nachfolgende Text illustriert nur welche Risiken
+            im Echtbetrieb damit verbunden wären.
+          </mat-error>
         </p>
-        <mat-checkbox [(ngModel)]="readTerm">Gelesen</mat-checkbox>
+
+        <p>
+          Mit der Übernahme des Risiko verdiene ich attraktive Zinsen, die
+          Unternehmer direkt an mich als Versicherungsprämie bezahlen, sollte
+          der Ausnahmezustand durch Corona im versicherten Zeitraum vorbei sein
+          (an mehr als 20 Tagen des Monats kein Ausnahmezustand) erhalte ich
+          zusätzlich zur Prämie noch meinen Kapitaleinsatz retour.
+        </p>
+
+        <p>
+          Sollte das Risiko schlagend werden, also im ausgewählten Risikomonat
+          tatsächlich breitflächige Betriebsunterbrechungen in Österreich von
+          der Regierung verordnet werden, erhält der Versicherungsnehmer die
+          Auszahlung des Betrages und ich habe nur die Prämie verdient, bekomme
+          jedoch den einbezahlten Betrag nicht mehr zurück.ACHTUNG: dies führt
+          zu erheblichen Verlusten in der Geldanlage!
+        </p>
+
+        <p>
+          Als Investment ist diese Produkt speziell für jene geeignet, die durch
+          die aktuelle Krise Mehreinnahmen generieren (Supermärkte, Apotheken,
+          Lieferdienste, Webshopbetreiber) oder die mit kleinen Beiträgen
+          Unternehmen Planungssicherheit für die kommenden Monate geben wollen.
+        </p>
+
+        <mat-checkbox [(ngModel)]="readTerm">gelesen</mat-checkbox>
       </div>
       <button
         mat-raised-button

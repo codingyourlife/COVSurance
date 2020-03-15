@@ -6,7 +6,7 @@ import {
   CaluclatedInvestment,
 } from 'app/shared/services/data.service'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
-import { MatExpansionPanel } from '@angular/material'
+import { MatExpansionPanel, MatSnackBar } from '@angular/material'
 
 interface ComulatedInvestmentDisplay {
   risk: string

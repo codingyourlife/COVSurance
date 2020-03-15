@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { egretAnimations } from 'app/shared/animations/egret-animations'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { DataService } from 'app/shared/services/data.service'
+import { MatSnackBar } from '@angular/material'
 
 @Component({
   selector: 'app-invest',
@@ -30,7 +31,7 @@ export class InvestComponent implements OnInit {
 
   timeframes: { id: number; label: string }[] = []
 
-  constructor(private dataServ: DataService) {
+  constructor(private dataServ: DataService, private snackbar: MatSnackBar) {
     this.investForm = new FormGroup({
       risk: new FormControl('', Validators.required),
       volume: new FormControl(0, Validators.min(50)),
@@ -70,6 +71,11 @@ export class InvestComponent implements OnInit {
       validUntil,
     )
     this.investForm.reset()
+    this.snackbar.open('Ihr Investment wird bearbeitet..', 'Ok', {
+      duration: 1500,
+      verticalPosition: 'bottom',
+      horizontalPosition: 'center',
+    })
   }
 
   ngOnInit() {}
