@@ -114,7 +114,9 @@ describe("MoneyVault", function() {
           value: amount
         });
 
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
           insuree1
         );
@@ -151,30 +153,20 @@ describe("MoneyVault", function() {
         );
 
         await expectRevert(
-          tmpMoneyVault.insureeDeposits(insuree1, amount, "1"),
+          tmpMoneyVault.insureeDeposits(insuree1, {
+            value: amount
+          }),
           "wrong state for investment."
         );
-      });
-
-      it("insuree factor", async function() {
-        //investorDeposits required
-        await this.moneyVault.investorDeposits(investor1, {
-          value: "20"
-        });
-
-        await this.moneyVault.insureeDeposits(insuree1, "10", "2");
-        const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
-          insuree1
-        );
-
-        expect(depositOfInsuree.toString()).to.equal((10 * 2).toString()); //10*2
       });
 
       it("totalInvestorDeposits and totalInsureeDeposits", async function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: "20"
         });
-        await this.moneyVault.insureeDeposits(insuree1, "10", "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: "10"
+        });
 
         const totalInvestorDeposits = await this.moneyVault.getTotalInvestorDeposits();
         const totalInsureeDeposits = await this.moneyVault.getTotalInsureeDeposits();
@@ -193,7 +185,9 @@ describe("MoneyVault", function() {
         });
 
         await expectRevert(
-          this.moneyVault.insureeDeposits(insuree1, "11", "1"),
+          this.moneyVault.insureeDeposits(insuree1, {
+            value: amount
+          }),
           "investor amount too low"
         );
       });
@@ -219,7 +213,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
 
         const currentState = await this.moneyVault.getCurrentState();
         expect(currentState.toString()).to.equal("2");
@@ -229,7 +225,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
 
         const currentState = await this.moneyVault.getCurrentState();
@@ -260,7 +258,9 @@ describe("MoneyVault", function() {
         await tmpMoneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await tmpMoneyVault.insureeDeposits(insuree1, amount, "1");
+        await tmpMoneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await expectRevert(tmpMoneyVault.setActive(), "too early");
       });
 
@@ -268,7 +268,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
 
@@ -280,7 +282,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
 
@@ -306,7 +310,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
 
@@ -321,7 +327,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
 
@@ -337,7 +345,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
 
@@ -350,7 +360,9 @@ describe("MoneyVault", function() {
         await this.moneyVault.investorDeposits(investor1, {
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, amount, "1");
+        await this.moneyVault.insureeDeposits(insuree1, {
+          value: amount
+        });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
 

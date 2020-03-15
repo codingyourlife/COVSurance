@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Secondary.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./Interfaces/IMoneyVaultInvestor.sol";
+import "../Coins/Interfaces/IMintable.sol";
 
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
 contract MoneyVault is IMoneyVaultInvestor, Secondary {
@@ -23,8 +24,8 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         _insurancePeriodEnd = insurancePeriodEnd;
         _signaturePeriodStart = signaturePeriodStart;
         _signaturePeriodEnd = signaturePeriodEnd;
-        _investorCoin = investorCoin;
-        _insureeCoin = insureeCoin;
+        _investorCoin = IMintable(investorCoin);
+        _insureeCoin = IMintable(insureeCoin);
         _rateInPercent = rateInPercent;
     }
 
@@ -60,8 +61,8 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
     uint256 private _signaturePeriodStart;
     uint256 private _signaturePeriodEnd;
 
-    address private _investorCoin;
-    address private _insureeCoin;
+    IMintable private _investorCoin;
+    IMintable private _insureeCoin;
 
     uint8 private _rateInPercent;
 
@@ -110,6 +111,8 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         _totalInvestorDeposits = _totalInvestorDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
+        // _investorCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
+
         emit DepositedByInvestor(payee, msg.value);
 
         if (currentState == MoneyVaultState.Initial) {
@@ -119,10 +122,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         }
     }
 
-    function insureeDeposits(address payee, uint256 amount, uint256 factor)
-        public
-        onlyPrimary
-    {
+    function insureeDeposits(address payee) external payable onlyPrimary {
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
@@ -131,24 +131,23 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         require(_signaturePeriodStart <= now, "too early");
         require(_signaturePeriodEnd >= now, "too late");
 
-        uint256 factorizedAmount = amount.mul(factor);
-
         require(
-            _totalInvestorDeposits >=
-                _totalInsureeDeposits.add(factorizedAmount),
+            _totalInvestorDeposits >= _totalInsureeDeposits.add(msg.value),
             "investor amount too low"
         );
 
-        _insureeDeposits[payee] = _insureeDeposits[payee].add(factorizedAmount);
-        _totalInsureeDeposits = _totalInsureeDeposits.add(factorizedAmount);
-        _totalDeposits = _totalDeposits.add(factorizedAmount);
+        _insureeDeposits[payee] = _insureeDeposits[payee].add(msg.value);
+        _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
+        _totalDeposits = _totalDeposits.add(msg.value);
 
-        emit DepositedByInsuree(payee, factorizedAmount);
+        // _insureeCoin.mint(payee, factorizedAmount.mul(1000)); //TODO: mul1000 is just for testnet
+
+        emit DepositedByInsuree(payee, msg.value);
 
         if (currentState == MoneyVaultState.InvestorFound) {
             currentState = MoneyVaultState.InsureeFound;
 
-            emit StateChangedToInsureeFound(payee, factorizedAmount);
+            emit StateChangedToInsureeFound(payee, msg.value);
         }
     }
 
