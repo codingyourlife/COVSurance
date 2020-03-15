@@ -6,3 +6,11 @@
   right: 0;
   height: 320px;
 }
+
+.highlight-on-hover {
+  transition: transform 0.3s;
+}
+
+.highlight-on-hover:hover {
+  transform: scale(1.025);
+}
