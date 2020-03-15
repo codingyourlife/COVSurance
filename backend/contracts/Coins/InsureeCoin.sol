@@ -5,9 +5,11 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./Interfaces/ITransferableOwnership.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
+import "./Interfaces/IMintable.sol";
 
 contract InsureeCoin is
     ITransferableOwnership,
+    IMintable,
     ERC20Mintable,
     ERC20Detailed,
     Ownable

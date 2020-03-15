@@ -8,10 +8,12 @@ import "./Interfaces/IInvestorCoin.sol";
 import "./Interfaces/ITransferableOwnership.sol";
 import "../MoneyVault/Interfaces/IMoneyVaultInvestor.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20Mintable.sol";
+import "./Interfaces/IMintable.sol";
 
 contract InvestorCoin is
     IInvestorCoin,
     ITransferableOwnership,
+    IMintable,
     ERC20Mintable,
     ERC20Detailed,
     Ownable

@@ -38,6 +38,8 @@ contract TokenFactory is ITokenFactory {
 
         investorCoin.transferOwnership(msg.sender);
         insureeCoin.transferOwnership(msg.sender);
+        investorCoin.addMinter(msg.sender);
+        insureeCoin.addMinter(msg.sender);
 
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 

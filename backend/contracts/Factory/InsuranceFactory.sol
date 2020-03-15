@@ -4,6 +4,7 @@ import "./MoneyVaultFactory.sol";
 import "./Interfaces/ITokenFactory.sol";
 import "./Interfaces/IInsuranceFactory.sol";
 import "../Coins/Interfaces/ITransferableOwnership.sol";
+import "../Coins/Interfaces/IMintable.sol";
 
 contract InsuranceFactory is IInsuranceFactory {
     IMoneyVaultFactory _moneyVaultFactory;
@@ -55,6 +56,8 @@ contract InsuranceFactory is IInsuranceFactory {
 
         ITransferableOwnership(investorCoin).transferOwnership(moneyVault);
         ITransferableOwnership(insureeCoin).transferOwnership(moneyVault);
+        IMintable(investorCoin).addMinter(moneyVault);
+        IMintable(insureeCoin).addMinter(moneyVault);
 
         emit InsuranceCreated(
             msg.sender,
