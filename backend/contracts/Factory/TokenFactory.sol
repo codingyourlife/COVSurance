@@ -2,17 +2,18 @@ pragma solidity ^0.5.5;
 
 import "../Coins/InvestorCoin.sol";
 import "../Coins/InsureeCoin.sol";
+import "./Interfaces/ITokenFactory.sol";
 
-contract TokenFactory {
+contract TokenFactory is ITokenFactory {
     event InvestorCoinCreated(address indexed sender, InvestorCoin coin);
     event InsureeCoinCreated(address indexed sender, InsureeCoin coin);
 
     function createCoins(
-        string memory tokenNameInvestorCoin,
-        string memory tokenNameInsureeCoin,
+        string calldata tokenNameInvestorCoin,
+        string calldata tokenNameInsureeCoin,
         uint256 rateInPercent,
         address moneyVault
-    ) public returns (InvestorCoin, InsureeCoin) {
+    ) external returns (address, address) {
         InvestorCoin investorCoin = new InvestorCoin(
             tokenNameInvestorCoin,
             "COVInv",
@@ -39,7 +40,7 @@ contract TokenFactory {
 
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 
-        return (investorCoin, insureeCoin);
+        return (address(investorCoin), address(insureeCoin));
 
     }
 }

@@ -12,6 +12,7 @@ const zero_address = "0x0000000000000000000000000000000000000000";
 
 const InsuranceFactory = contract.fromArtifact("InsuranceFactory");
 const MoneyVaultFactory = contract.fromArtifact("MoneyVaultFactory");
+const TokenFactory = contract.fromArtifact("TokenFactory");
 
 describe("InsuranceFactory", function() {
   const [controller, investor1, insuree1] = accounts;
@@ -21,8 +22,10 @@ describe("InsuranceFactory", function() {
   context("once deployed", function() {
     beforeEach(async function() {
       const moneyVaultFactory = await MoneyVaultFactory.new();
+      const tokenFactory = await TokenFactory.new();
       this.insuranceFactory = await InsuranceFactory.new(
-        moneyVaultFactory.address
+        moneyVaultFactory.address,
+        tokenFactory.address
       );
     });
 

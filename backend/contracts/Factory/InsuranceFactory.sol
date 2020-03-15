@@ -1,14 +1,12 @@
 pragma solidity ^0.5.5;
 
 import "./MoneyVaultFactory.sol";
-import "./TokenFactory.sol";
-import "../Coins/InvestorCoin.sol";
-import "../Coins/InsureeCoin.sol";
+import "./Interfaces/ITokenFactory.sol";
 import "./Interfaces/IInsuranceFactory.sol";
 
 contract InsuranceFactory is IInsuranceFactory {
     IMoneyVaultFactory _moneyVaultFactory;
-    TokenFactory _tokenFactory;
+    ITokenFactory _tokenFactory;
 
     event InsuranceCreated(
         address indexed sender,
@@ -18,13 +16,16 @@ contract InsuranceFactory is IInsuranceFactory {
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd,
-        InvestorCoin investorCoin,
-        InsureeCoin insureeCoin
+        address investorCoin,
+        address insureeCoin
     );
 
-    constructor(IMoneyVaultFactory moneyVaultFactory) public {
+    constructor(
+        IMoneyVaultFactory moneyVaultFactory,
+        ITokenFactory tokenFactory
+    ) public {
         _moneyVaultFactory = moneyVaultFactory;
-        _tokenFactory = new TokenFactory();
+        _tokenFactory = tokenFactory;
     }
 
     function createInsuranceFor(
@@ -43,8 +44,7 @@ contract InsuranceFactory is IInsuranceFactory {
             signaturePeriodEnd
         );
 
-        (InvestorCoin investorCoin, InsureeCoin insureeCoin) = _tokenFactory
-            .createCoins(
+        (address investorCoin, address insureeCoin) = _tokenFactory.createCoins(
             tokenNameInvestor,
             tokenNameInsuree,
             rateInPercent,
