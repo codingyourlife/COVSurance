@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core'
+import { Moment } from 'moment'
+import * as moment from 'moment'
 
 export interface Investment {
   risk: string
@@ -6,6 +8,15 @@ export interface Investment {
   year: number
   sum: number
   bonus: number
+}
+
+interface BlockChainInvestment {
+  risk: string
+  startSecond: number
+  endSecond: number
+  volume: number
+  bonus: number
+  validUntilSecond: number
 }
 
 export interface CaluclatedInvestment {
@@ -92,6 +103,9 @@ export class DataService {
     },
   ]
 
+  private myInvestments: Investment[] = []
+  private myInsurances: CaluclatedInvestment[] = []
+
   constructor() {}
 
   private get investments(): Investment[] {
@@ -142,6 +156,7 @@ export class DataService {
     }
     calcInvestment.averageBonusPercent = calcInvestment.totalBonus / sum
     console.log('calculated Investment:', calcInvestment)
+    this.myInsurances.push(calcInvestment)
     return calcInvestment
   }
 
@@ -163,5 +178,33 @@ export class DataService {
       }
     }
     return comulatedInvestment
+  }
+
+  public invest(
+    risk: string,
+    volume: number,
+    bonus: number,
+    month: number,
+    year: number,
+    validUntil: Moment,
+  ) {
+    const investment: Investment = {
+      risk,
+      bonus,
+      month,
+      year,
+      sum: volume,
+    }
+    this.fakeInvestments.push(investment)
+    this.myInvestments.push(investment)
+    const blockChainInvestment: BlockChainInvestment = {
+      risk,
+      bonus,
+      volume,
+      startSecond: new Date(year, month, 0).getTime() / 1000,
+      endSecond: new Date(year, month, 31).getTime() / 1000,
+      validUntilSecond: validUntil.valueOf() / 1000,
+    }
+    console.log(blockChainInvestment)
   }
 }
