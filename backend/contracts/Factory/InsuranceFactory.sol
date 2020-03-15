@@ -7,7 +7,7 @@ import "../Coins/InsureeCoin.sol";
 import "./Interfaces/IInsuranceFactory.sol";
 
 contract InsuranceFactory is IInsuranceFactory {
-    MoneyVaultFactory _moneyVaultFactory;
+    IMoneyVaultFactory _moneyVaultFactory;
     TokenFactory _tokenFactory;
 
     event InsuranceCreated(
@@ -22,8 +22,8 @@ contract InsuranceFactory is IInsuranceFactory {
         InsureeCoin insureeCoin
     );
 
-    constructor() public {
-        _moneyVaultFactory = new MoneyVaultFactory();
+    constructor(IMoneyVaultFactory moneyVaultFactory) public {
+        _moneyVaultFactory = moneyVaultFactory;
         _tokenFactory = new TokenFactory();
     }
 
@@ -36,7 +36,7 @@ contract InsuranceFactory is IInsuranceFactory {
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
     ) external returns (address, address) {
-        MoneyVault moneyVault = _moneyVaultFactory.createMoneyVault(
+        address moneyVault = _moneyVaultFactory.createMoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
@@ -48,7 +48,7 @@ contract InsuranceFactory is IInsuranceFactory {
             tokenNameInvestor,
             tokenNameInsuree,
             rateInPercent,
-            address(moneyVault)
+            moneyVault
         );
 
         emit InsuranceCreated(
