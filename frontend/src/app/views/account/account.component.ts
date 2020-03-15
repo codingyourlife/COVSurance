@@ -83,8 +83,8 @@ export class AccountComponent implements OnInit {
         } ${investment.year}`
         return {
           risk: investment.risk,
-          bonus: `${(investment.bonus * 100).toFixed(2)} %`,
-          sum: investment.sum.toLocaleString(),
+          bonus: `${(investment.sum * investment.bonus).toFixed(2)} €`,
+          sum: investment.sum.toLocaleString() + ' €',
           month: timeFrame,
         }
       })
@@ -104,13 +104,13 @@ export class AccountComponent implements OnInit {
         const timeFrame: string = `${
           AccountComponent.months[investment.subInvestments[0].month]
         } ${investment.subInvestments[0].year}`
+        const sum = investment.subInvestments
+          .map(invest => invest.sum)
+          .reduce((prev, curr) => prev + curr)
         return {
           risk: investment.subInvestments[0].risk,
-          bonus: `${(investment.averageBonusPercent * 100).toFixed(2)} %`,
-          sum: investment.subInvestments
-            .map(invest => invest.sum)
-            .reduce((prev, curr) => prev + curr)
-            .toLocaleString(),
+          bonus: `${(investment.averageBonusPercent * sum).toFixed(2)} €`,
+          sum: sum.toLocaleString() + ' €',
           month: timeFrame,
         }
       })
