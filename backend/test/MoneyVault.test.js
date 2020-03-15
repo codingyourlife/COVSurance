@@ -174,15 +174,17 @@ describe("MoneyVault", function() {
       });
     });
 
-    it("insuree requests more than available", async function() {
-      await this.moneyVault.investorDeposits(investor1, {
-        value: "10"
-      });
+    context("thresholds", function() {
+      it("insuree requests more than available", async function() {
+        await this.moneyVault.investorDeposits(investor1, {
+          value: "10"
+        });
 
-      await expectRevert(
-        this.moneyVault.insureeDeposits(insuree1, "11", "1"),
-        "invstor amount too low"
-      );
+        await expectRevert(
+          this.moneyVault.insureeDeposits(insuree1, "11", "1"),
+          "invstor amount too low"
+        );
+      });
     });
 
     context("states", function() {
