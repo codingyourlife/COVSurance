@@ -27,6 +27,7 @@ describe("InsuranceFactory", function() {
         const deployReceipt = await this.insuranceFactory.createInsuranceFor(
           "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
+          "10",
           "0",
           "1",
           "2",

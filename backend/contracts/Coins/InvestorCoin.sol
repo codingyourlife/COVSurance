@@ -12,13 +12,23 @@ contract InvestorCoin is ERC20, ERC20Detailed, Ownable, IInvestorCoin {
         ERC20Detailed(name, symbol, decimals)
     {}
 
+    uint256 private _rateInPercent;
     IERC20 private _insureeCoin;
 
-    function getInsureeCoin() public view returns (IERC20) {
+    function getRateInPercent() external view returns (uint256) {
+        return _rateInPercent;
+    }
+
+    function getInsureeCoin() external view returns (IERC20) {
         return _insureeCoin;
     }
 
     function setReferenceInsureeCoin(address insureeCoin) public onlyOwner {
         _insureeCoin = IERC20(insureeCoin);
+    }
+
+    function setRateInPercent(uint256 rateInPercent) external onlyOwner {
+        // require(address(_insureeCoin) != address(0), "no ref insureeCoin");
+        _rateInPercent = rateInPercent;
     }
 }

@@ -25,6 +25,7 @@ describe("TokenFactory", function() {
       it("create InvestorCoin", async function() {
         const investorCoinReceipt = await this.tokenFactory.createInvestorCoin(
           "Cov Investor 05/2020 10%",
+          "10",
           {
             from: unknown
           }

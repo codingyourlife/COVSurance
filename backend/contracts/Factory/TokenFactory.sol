@@ -7,10 +7,10 @@ contract TokenFactory {
     event InvestorCoinCreated(address indexed sender, InvestorCoin coin);
     event InsureeCoinCreated(address indexed sender, InsureeCoin coin);
 
-    function createInvestorCoin(string memory tokenBaseName)
-        public
-        returns (InvestorCoin)
-    {
+    function createInvestorCoin(
+        string memory tokenBaseName,
+        uint256 rateInPercent
+    ) public returns (InvestorCoin) {
         string memory symbol = "COVInv";
         uint8 decimals = 18;
         InvestorCoin investorCoin = new InvestorCoin(
@@ -18,6 +18,8 @@ contract TokenFactory {
             symbol,
             decimals
         );
+
+        investorCoin.setRateInPercent(rateInPercent);
 
         emit InvestorCoinCreated(msg.sender, investorCoin);
 
@@ -39,6 +41,10 @@ contract TokenFactory {
 
         insureeCoin.setReferenceInvestorCoin(investorCoinAddress);
         investorCoin.setReferenceInsureeCoin(address(insureeCoin));
+
+        uint256 rateInPercent = investorCoin.getRateInPercent();
+
+        insureeCoin.setRateInPercent(rateInPercent);
 
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 

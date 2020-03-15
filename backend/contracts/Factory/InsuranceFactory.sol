@@ -30,6 +30,7 @@ contract InsuranceFactory is IInsuranceFactory {
     function createInsuranceFor(
         string calldata tokenBaseNameInvstor,
         string calldata tokenBaseNameInsuree,
+        uint256 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
@@ -43,7 +44,8 @@ contract InsuranceFactory is IInsuranceFactory {
         );
 
         InvestorCoin investorCoin = _tokenFactory.createInvestorCoin(
-            tokenBaseNameInvstor
+            tokenBaseNameInvstor,
+            rateInPercent
         );
 
         InsureeCoin insureeCoin = _tokenFactory.createInsureeCoin(
