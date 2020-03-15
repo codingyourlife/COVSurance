@@ -142,7 +142,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        _insureeCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
+        _insureeCoin.mint(payee, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
 
         emit DepositedByInsuree(payee, msg.value);
 
