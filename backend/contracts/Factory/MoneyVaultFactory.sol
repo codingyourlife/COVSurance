@@ -18,6 +18,8 @@ contract MoneyVaultFactory {
             signaturePeriodEnd
         );
 
+        moneyVault.transferPrimary(msg.sender);
+
         emit MoneyVaultCreated(msg.sender, moneyVault);
 
         return moneyVault;

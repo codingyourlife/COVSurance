@@ -3,9 +3,10 @@ pragma solidity ^0.5.5;
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Secondary.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "./Interfaces/IMoneyVaultInvestor.sol";
 
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
-contract MoneyVault is Secondary {
+contract MoneyVault is IMoneyVaultInvestor, Secondary {
     using SafeMath for uint256;
     using Address for address;
 
@@ -60,7 +61,7 @@ contract MoneyVault is Secondary {
         return currentState;
     }
 
-    function depositsOfInvestor(address payee) public view returns (uint256) {
+    function depositsOfInvestor(address payee) external view returns (uint256) {
         return _investorDeposits[payee];
     }
 
@@ -68,7 +69,7 @@ contract MoneyVault is Secondary {
         return _insureeDeposits[payee];
     }
 
-    function getTotalInvestorDeposits() public view returns (uint256) {
+    function getTotalInvestorDeposits() external view returns (uint256) {
         return _totalInvestorDeposits;
     }
 
@@ -76,7 +77,7 @@ contract MoneyVault is Secondary {
         return _totalInsureeDeposits;
     }
 
-    function getTotalDeposits() public view returns (uint256) {
+    function getTotalDeposits() external view returns (uint256) {
         return _totalDeposits;
     }
 
@@ -84,7 +85,7 @@ contract MoneyVault is Secondary {
      * @dev Stores the sent amount as credit to be withdrawn.
      * @param payee The destination address of the funds.
      */
-    function investorDeposits(address payee) public payable onlyPrimary {
+    function investorDeposits(address payee) external payable onlyPrimary {
         require(
             currentState == MoneyVaultState.Initial ||
                 currentState == MoneyVaultState.InvestorFound ||

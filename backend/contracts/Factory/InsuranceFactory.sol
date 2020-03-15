@@ -30,25 +30,25 @@ contract InsuranceFactory is IInsuranceFactory {
     function createInsuranceFor(
         string calldata tokenBaseNameInvstor,
         string calldata tokenBaseNameInsuree,
+        uint256 rateInPercent,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
     ) external returns (address, address) {
-        _moneyVaultFactory.createMoneyVault(
+        MoneyVault moneyVault = _moneyVaultFactory.createMoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
             signaturePeriodEnd
         );
 
-        InvestorCoin investorCoin = _tokenFactory.createInvestorCoin(
-            tokenBaseNameInvstor
-        );
-
-        InsureeCoin insureeCoin = _tokenFactory.createInsureeCoin(
+        (InvestorCoin investorCoin, InsureeCoin insureeCoin) = _tokenFactory
+            .createCoins(
+            tokenBaseNameInvstor,
             tokenBaseNameInsuree,
-            address(investorCoin)
+            rateInPercent,
+            address(moneyVault)
         );
 
         emit InsuranceCreated(
