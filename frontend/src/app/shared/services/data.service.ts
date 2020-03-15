@@ -115,13 +115,21 @@ export class DataService {
     },
   ]
 
-  private myInvestments: Investment[] = []
-  private myInsurances: CaluclatedInvestment[] = []
+  private _myInvestments: Investment[] = []
+  private _myInsurances: CaluclatedInvestment[] = []
 
   constructor() {}
 
   private get investments(): Investment[] {
     return [...this.fakeInvestments]
+  }
+
+  public get myInvestments(): Investment[] {
+    return this._myInvestments
+  }
+
+  public get myInsurances(): CaluclatedInvestment[] {
+    return this._myInsurances
   }
 
   public calculateInvestment(
@@ -182,7 +190,7 @@ export class DataService {
     }
     calcInvestment.averageBonusPercent = calcInvestment.totalBonus / sum
     console.log('calculated Investment:', calcInvestment)
-    this.myInsurances.push(calcInvestment)
+    this.myInsurances.push({ ...calcInvestment })
     return calcInvestment
   }
 
@@ -223,7 +231,7 @@ export class DataService {
       sum: volume,
     }
     this.fakeInvestments.push(investment)
-    this.myInvestments.push(investment)
+    this.myInvestments.push({ ...investment })
     const blockChainInvestment: BlockChainInvestment = {
       risk,
       bonus,

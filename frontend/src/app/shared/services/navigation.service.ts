@@ -612,6 +612,13 @@ export class NavigationService {
       icon: 'chat',
       state: 'insure',
     },
+    {
+      name: 'Kontostand',
+      type: 'link',
+      tooltip: 'Kontostand',
+      icon: 'chat',
+      state: 'account',
+    },
   ]
 
   // Icon menu TITLE at the very top of navigation.

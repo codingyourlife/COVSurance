@@ -142,7 +142,7 @@ export class InsureComponent implements OnInit {
         }
         return {
           risk: investment.risk,
-          bonus: `${investment.bonus * 100} %`,
+          bonus: `${(investment.bonus * 100).toFixed(2)} %`,
           sum: investment.sum.toLocaleString(),
           month: timeFrame,
         }

@@ -1,0 +1,87 @@
+<div
+  [perfectScrollbar]="{}"
+  fxLayout="column wrap"
+  fxLayoutAlign="center center"
+>
+  <div class="header-img"></div>
+  <div
+    class="signup4-container mat-elevation-z4"
+    fxLayout="column wrap"
+    fxLayout.xs="column"
+    fxLayoutAlign="space-around stretch"
+    fxFlex="20"
+    [@animate]="{
+      value: '*',
+      params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+    }"
+    style="width: 60%; margin-bottom: 32px;margin-top: 160px;max-width: 600px; background: white;"
+  >
+    <!-- Right side content -->
+    <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
+      <h1>Investiert</h1>
+      <div fxLayout="column" fxLayoutAlign="center center" class="full-width">
+        <mat-form-field class="margin-333" style="width: 80%">
+          <input
+            matInput
+            placeholder="Type to filter all columns"
+            value=""
+            (keyup)="updateInvestmentFilter($event)"
+          />
+        </mat-form-field>
+
+        <div class="mat-box-shadow margin-333" style="width: 98%;">
+          <ngx-datatable
+            class="material bg-white"
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="50"
+            [limit]="8"
+            [rows]="myInvestments"
+            [columns]="columns"
+          ></ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="signup4-container mat-elevation-z4"
+    fxLayout="column wrap"
+    fxLayout.xs="column"
+    fxLayoutAlign="center stretch"
+    fxFlex="20"
+    [@animate]="{
+      value: '*',
+      params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+    }"
+    style="width: 60%; margin-bottom: 32px; margin-top: 24pxpx; max-width: 600px; background: white;"
+  >
+    <!-- Right side content -->
+    <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
+      <h1>Versichert</h1>
+      <div fxLayout="column" fxLayoutAlign="center center" class="full-width">
+        <mat-form-field class="margin-333" style="width: 80%">
+          <input
+            matInput
+            placeholder="Type to filter all columns"
+            value=""
+            (keyup)="updateInsuranceFilter($event)"
+          />
+        </mat-form-field>
+
+        <div class="mat-box-shadow margin-333" style="width: 98%;">
+          <ngx-datatable
+            class="material bg-white"
+            [columnMode]="'force'"
+            [headerHeight]="50"
+            [footerHeight]="50"
+            [rowHeight]="50"
+            [limit]="8"
+            [rows]="myInsurances"
+            [columns]="columns"
+          ></ngx-datatable>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
