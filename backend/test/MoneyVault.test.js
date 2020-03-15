@@ -182,7 +182,7 @@ describe("MoneyVault", function() {
 
         await expectRevert(
           this.moneyVault.insureeDeposits(insuree1, "11", "1"),
-          "invstor amount too low"
+          "investor amount too low"
         );
       });
     });

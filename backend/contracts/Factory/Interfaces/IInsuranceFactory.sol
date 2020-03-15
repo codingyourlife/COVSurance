@@ -2,7 +2,7 @@ pragma solidity ^0.5.5;
 
 interface IInsuranceFactory {
     function createInsuranceFor(
-        string calldata tokenBaseNameInvstor,
+        string calldata tokenBaseNameInvestor,
         string calldata tokenBaseNameInsuree,
         uint256 rateInPercent,
         uint256 insurancePeriodStart,
