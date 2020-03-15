@@ -31,7 +31,9 @@ describe("MoneyVault", function() {
         insurancePeriodStart,
         insurancePeriodEnd,
         signaturePeriodStart,
-        signaturePeriodEnd
+        signaturePeriodEnd,
+        zero_address,
+        zero_address
       );
     });
 
@@ -62,7 +64,9 @@ describe("MoneyVault", function() {
           insurancePeriodStart,
           insurancePeriodEnd,
           signaturePeriodStart,
-          signaturePeriodEnd
+          signaturePeriodEnd,
+          zero_address,
+          zero_address
         );
 
         await expectRevert(
@@ -88,7 +92,9 @@ describe("MoneyVault", function() {
           insurancePeriodStart,
           insurancePeriodEnd,
           signaturePeriodStart,
-          signaturePeriodEnd
+          signaturePeriodEnd,
+          zero_address,
+          zero_address
         );
 
         await expectRevert(
@@ -128,7 +134,9 @@ describe("MoneyVault", function() {
           insurancePeriodStart,
           insurancePeriodEnd,
           signaturePeriodStart,
-          signaturePeriodEnd
+          signaturePeriodEnd,
+          zero_address,
+          zero_address
         );
 
         await expectRevert(
@@ -239,7 +247,9 @@ describe("MoneyVault", function() {
           insurancePeriodStart,
           insurancePeriodEnd,
           signaturePeriodStart,
-          signaturePeriodEnd
+          signaturePeriodEnd,
+          zero_address,
+          zero_address
         );
 
         await tmpMoneyVault.investorDeposits(investor1, {

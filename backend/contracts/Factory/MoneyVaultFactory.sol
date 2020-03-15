@@ -10,13 +10,17 @@ contract MoneyVaultFactory is IMoneyVaultFactory {
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
-        uint256 signaturePeriodEnd
+        uint256 signaturePeriodEnd,
+        address investorCoin,
+        address insureeCoin
     ) public returns (address) {
         MoneyVault moneyVault = new MoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
-            signaturePeriodEnd
+            signaturePeriodEnd,
+            investorCoin,
+            insureeCoin
         );
 
         moneyVault.transferPrimary(msg.sender);

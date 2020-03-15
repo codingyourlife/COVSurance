@@ -10,6 +10,4 @@ interface IInvestorCoin {
     function getRateInPercent() external view returns (uint256 rateInPercent);
 
     function setRateInPercent(uint256 rateInPercent) external;
-
-    function setMoneyVault(address moneyVault) external;
 }

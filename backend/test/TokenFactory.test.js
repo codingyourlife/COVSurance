@@ -27,7 +27,6 @@ describe("TokenFactory", function() {
           "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
           "10",
-          moneyVault,
           {
             from: unknown
           }
@@ -45,7 +44,6 @@ describe("TokenFactory", function() {
           "Cov Investor 05/2020 10%",
           "Cov Insuree 05/2020 10%",
           "10",
-          moneyVault,
           {
             from: unknown
           }

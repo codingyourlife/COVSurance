@@ -5,6 +5,8 @@ interface IMoneyVaultFactory {
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
-        uint256 signaturePeriodEnd
+        uint256 signaturePeriodEnd,
+        address investorCoin,
+        address insureeCoin
     ) external returns (address);
 }

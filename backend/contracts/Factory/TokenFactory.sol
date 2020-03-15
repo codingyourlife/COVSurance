@@ -11,8 +11,7 @@ contract TokenFactory is ITokenFactory {
     function createCoins(
         string calldata tokenNameInvestorCoin,
         string calldata tokenNameInsureeCoin,
-        uint256 rateInPercent,
-        address moneyVault
+        uint256 rateInPercent
     ) external returns (address, address) {
         InvestorCoin investorCoin = new InvestorCoin(
             tokenNameInvestorCoin,
@@ -21,7 +20,6 @@ contract TokenFactory is ITokenFactory {
         );
 
         investorCoin.setRateInPercent(rateInPercent);
-        investorCoin.setMoneyVault(moneyVault);
 
         emit InvestorCoinCreated(msg.sender, investorCoin);
 

@@ -14,12 +14,16 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
-        uint256 signaturePeriodEnd
+        uint256 signaturePeriodEnd,
+        address investorCoin,
+        address insureeCoin
     ) public {
         _insurancePeriodStart = insurancePeriodStart;
         _insurancePeriodEnd = insurancePeriodEnd;
         _signaturePeriodStart = signaturePeriodStart;
         _signaturePeriodEnd = signaturePeriodEnd;
+        _investorCoin = investorCoin;
+        _insureeCoin = insureeCoin;
     }
 
     event DepositedByInvestor(address indexed payee, uint256 amount);
@@ -53,6 +57,9 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
 
     uint256 private _signaturePeriodStart;
     uint256 private _signaturePeriodEnd;
+
+    address private _investorCoin;
+    address private _insureeCoin;
 
     mapping(address => uint256) private _investorDeposits;
     mapping(address => uint256) private _insureeDeposits;

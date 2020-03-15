@@ -4,7 +4,6 @@ interface ITokenFactory {
     function createCoins(
         string calldata tokenNameInvestorCoin,
         string calldata tokenNameInsureeCoin,
-        uint256 rateInPercent,
-        address moneyVault
+        uint256 rateInPercent
     ) external returns (address investorCoin, address insureeCoin);
 }

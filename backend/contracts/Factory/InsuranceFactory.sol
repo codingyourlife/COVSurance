@@ -37,18 +37,19 @@ contract InsuranceFactory is IInsuranceFactory {
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
     ) external returns (address, address) {
+        (address investorCoin, address insureeCoin) = _tokenFactory.createCoins(
+            tokenNameInvestor,
+            tokenNameInsuree,
+            rateInPercent
+        );
+
         address moneyVault = _moneyVaultFactory.createMoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
             signaturePeriodStart,
-            signaturePeriodEnd
-        );
-
-        (address investorCoin, address insureeCoin) = _tokenFactory.createCoins(
-            tokenNameInvestor,
-            tokenNameInsuree,
-            rateInPercent,
-            moneyVault
+            signaturePeriodEnd,
+            investorCoin,
+            insureeCoin
         );
 
         emit InsuranceCreated(

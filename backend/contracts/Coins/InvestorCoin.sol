@@ -34,8 +34,4 @@ contract InvestorCoin is ERC20, ERC20Detailed, Ownable, IInvestorCoin {
         // require(address(_insureeCoin) != address(0), "no ref insureeCoin");
         _rateInPercent = rateInPercent;
     }
-
-    function setMoneyVault(address moneyVault) external onlyOwner {
-        _moneyVault = IMoneyVaultInvestor(moneyVault);
-    }
 }
