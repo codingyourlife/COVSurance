@@ -1,6 +1,16 @@
-import { Injectable } from '@angular/core'
+import { Injectable, Inject } from '@angular/core'
 import { Moment } from 'moment'
+import { WEB3 } from './web3'
+import Web3 from 'web3'
+import * as web3Util from 'web3-utils'
 import * as moment from 'moment'
+import { HttpClient } from '@angular/common/http'
+
+const artifacts = {
+  MoneyVaultFactory: '0x31B0161f0aFDc28fd0A7831Db7263940C64E634f',
+  TokenFactory: '0x9D8cB9a3C7390DF0A31C21e1B52E315950936Dbf',
+  InsuranceFactory: '0xC8d26380Fd87423d74bAa947A25940ef6Bf9f876',
+}
 
 export interface Investment {
   id: number
@@ -118,7 +128,16 @@ export class DataService {
   private _myInvestments: Investment[] = []
   private _myInsurances: CaluclatedInvestment[] = []
 
-  constructor() {}
+  private myAcc: string
+
+  constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
+    this.init().catch(err => console.error(err))
+  }
+
+  async init() {
+    const accounts = await this.web3.eth.getAccounts()
+    this.myAcc = accounts[0]
+  }
 
   private get investments(): Investment[] {
     return [...this.fakeInvestments]
@@ -214,7 +233,7 @@ export class DataService {
     return comulatedInvestment
   }
 
-  public invest(
+  public async invest(
     risk: string,
     volume: number,
     bonus: number,
@@ -234,12 +253,51 @@ export class DataService {
     this.myInvestments.push({ ...investment })
     const blockChainInvestment: BlockChainInvestment = {
       risk,
-      bonus,
+      bonus, // 0.1
       volume,
-      startSecond: new Date(year, month, 0).getTime() / 1000,
-      endSecond: new Date(year, month, 31).getTime() / 1000,
-      validUntilSecond: validUntil.valueOf() / 1000,
+      startSecond: Math.floor(new Date(year, month, 0).getTime() / 1000),
+      endSecond: Math.floor(new Date(year, month, 31).getTime() / 1000),
+      validUntilSecond: Math.floor(validUntil.valueOf() / 1000),
     }
     console.log(blockChainInvestment)
+    const locator = await this.http
+      .get('../../../assets/artifacts/Locator.json')
+      .toPromise()
+      .then(res => res as any)
+    const InsuranceFactoryAbi = await this.http
+      .get('../../../assets/artifacts/InsuranceFactory.abi.json')
+      .toPromise()
+      .then(res => res as any)
+    const contract = new this.web3.eth.Contract(
+      InsuranceFactoryAbi,
+      locator.InsuranceFactory,
+      {
+        from: this.myAcc,
+      },
+    )
+    console.log(contract)
+    const tokenNameInvest = `${risk} investor ${bonus * 100}`
+    const tokenNameInsuree = `${risk} insuree ${bonus * 100}`
+    const rateInPercent = this.web3.utils.toWei(bonus + '', 'ether')
+
+    const res = await contract.methods
+      .createInsuranceFor(
+        tokenNameInvest,
+        tokenNameInsuree,
+        blockChainInvestment.startSecond.toString(),
+        blockChainInvestment.endSecond.toString(),
+        Math.floor(Date.now() / 1000).toString(),
+        blockChainInvestment.validUntilSecond.toString(),
+        rateInPercent,
+      )
+      .send()
+    console.log(res)
+    const blocknumber = await this.web3.eth.getBlockNumber()
+    console.log(
+      contract.getPastEvents('allEvents', {
+        fromBlock: 17405256 - 1000,
+        toBlock: blocknumber,
+      }),
+    )
   }
 }
