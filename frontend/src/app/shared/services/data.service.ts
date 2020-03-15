@@ -3,6 +3,7 @@ import { Moment } from 'moment'
 import * as moment from 'moment'
 
 export interface Investment {
+  id: number
   risk: string
   month: number
   year: number
@@ -30,8 +31,10 @@ export interface CaluclatedInvestment {
   providedIn: 'root',
 })
 export class DataService {
+  static lastId = 9
   private fakeInvestments: Investment[] = [
     {
+      id: 0,
       risk: 'Pandemie',
       month: 4,
       year: 2020,
@@ -39,6 +42,7 @@ export class DataService {
       bonus: 0.1,
     },
     {
+      id: 1,
       risk: 'Pandemie',
       month: 4,
       year: 2020,
@@ -46,6 +50,7 @@ export class DataService {
       bonus: 0.1,
     },
     {
+      id: 2,
       risk: 'Pandemie',
       month: 4,
       year: 2020,
@@ -53,6 +58,7 @@ export class DataService {
       bonus: 0.1,
     },
     {
+      id: 3,
       risk: 'Pandemie',
       month: 4,
       year: 2020,
@@ -60,6 +66,7 @@ export class DataService {
       bonus: 0.1,
     },
     {
+      id: 4,
       risk: 'Pandemie',
       month: 4,
       year: 2020,
@@ -67,6 +74,7 @@ export class DataService {
       bonus: 0.12,
     },
     {
+      id: 5,
       risk: 'Pandemie',
       month: 5,
       year: 2020,
@@ -74,6 +82,7 @@ export class DataService {
       bonus: 0.09,
     },
     {
+      id: 6,
       risk: 'Pandemie',
       month: 5,
       year: 2020,
@@ -81,6 +90,7 @@ export class DataService {
       bonus: 0.09,
     },
     {
+      id: 7,
       risk: 'Pandemie',
       month: 5,
       year: 2020,
@@ -88,6 +98,7 @@ export class DataService {
       bonus: 0.12,
     },
     {
+      id: 8,
       risk: 'Apocalypse',
       month: 6,
       year: 2020,
@@ -95,6 +106,7 @@ export class DataService {
       bonus: 0.18,
     },
     {
+      id: 9,
       risk: 'Pandemie',
       month: 6,
       year: 2020,
@@ -103,13 +115,21 @@ export class DataService {
     },
   ]
 
-  private myInvestments: Investment[] = []
-  private myInsurances: CaluclatedInvestment[] = []
+  private _myInvestments: Investment[] = []
+  private _myInsurances: CaluclatedInvestment[] = []
 
   constructor() {}
 
   private get investments(): Investment[] {
     return [...this.fakeInvestments]
+  }
+
+  public get myInvestments(): Investment[] {
+    return this._myInvestments
+  }
+
+  public get myInsurances(): CaluclatedInvestment[] {
+    return this._myInsurances
   }
 
   public calculateInvestment(
@@ -141,12 +161,26 @@ export class DataService {
         calcInvestment.totalBonus +=
           filteredInvestments[index].sum * filteredInvestments[index].bonus
         restSum -= filteredInvestments[index].sum
+        const dataIndex = this.fakeInvestments.findIndex(
+          invest => invest.id === filteredInvestments[index].id,
+        )
+        if (dataIndex !== -1) {
+          this.fakeInvestments.splice(dataIndex, 1)
+        }
       } else {
         calcInvestment.subInvestments.push({
           ...filteredInvestments[index],
           sum: restSum,
         })
         calcInvestment.totalBonus += restSum * filteredInvestments[index].bonus
+
+        const dataIndex = this.fakeInvestments.findIndex(
+          invest => invest.id === filteredInvestments[index].id,
+        )
+        if (dataIndex !== -1) {
+          this.fakeInvestments[dataIndex].sum -= restSum
+        }
+
         restSum = 0
       }
       index++
@@ -156,7 +190,7 @@ export class DataService {
     }
     calcInvestment.averageBonusPercent = calcInvestment.totalBonus / sum
     console.log('calculated Investment:', calcInvestment)
-    this.myInsurances.push(calcInvestment)
+    this.myInsurances.push({ ...calcInvestment })
     return calcInvestment
   }
 
@@ -189,6 +223,7 @@ export class DataService {
     validUntil: Moment,
   ) {
     const investment: Investment = {
+      id: ++DataService.lastId,
       risk,
       bonus,
       month,
@@ -196,7 +231,7 @@ export class DataService {
       sum: volume,
     }
     this.fakeInvestments.push(investment)
-    this.myInvestments.push(investment)
+    this.myInvestments.push({ ...investment })
     const blockChainInvestment: BlockChainInvestment = {
       risk,
       bonus,

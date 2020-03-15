@@ -26,24 +26,32 @@
       style="margin-top:auto"
       fxLayout="row"
       fxLayoutAlign="space-around center"
+    ></div>
+  </div>
+
+  <div
+    fxLayout="row"
+    style="width: 60%; max-width: 600px;"
+    fxLayoutAlign="space-around center"
+  >
+    <button
+      mat-raised-button
+      style="width: 100%; height: 100px; margin: 16px;"
+      fxLayout="column"
+      fxLayoutAlign="center center"
+      routerLink="/invest"
     >
-      <button
-        mat-button
-        style="width: 100%;"
-        class="mat-accent"
-        routerLink="/invest"
-      >
-        Investieren
-      </button>
-      <button
-        mat-button
-        style="width: 100%;"
-        class="mat-accent"
-        routerLink="/insure"
-      >
-        Versichern
-      </button>
-    </div>
+      Investieren
+    </button>
+    <button
+      mat-raised-button
+      style="width: 100%; height: 100px; margin: 16px;"
+      fxLayout="column"
+      fxLayoutAlign="center center"
+      routerLink="/insure"
+    >
+      Versichern
+    </button>
   </div>
 
   <div
@@ -56,23 +64,45 @@
       fxLayout="column"
       fxLayoutAlign="center center"
     >
-      <mat-card-content>Text</mat-card-content>
+      <mat-card-content
+        class="full-width"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon>attach_money</mat-icon>
+        Text
+      </mat-card-content>
     </mat-card>
     <mat-card
       style="width: 100%; height: 100px;"
       fxLayout="column"
       fxLayoutAlign="center center"
     >
-      <mat-card-content>Text</mat-card-content>
+      <mat-card-content
+        class="full-width"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon>attach_money</mat-icon>
+        Text
+      </mat-card-content>
     </mat-card>
     <mat-card
       style="width: 100%; height: 100px;"
       fxLayout="column"
       fxLayoutAlign="center center"
     >
-      <mat-card-content>Text</mat-card-content>
+      <mat-card-content
+        class="full-width"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon>attach_money</mat-icon>
+        Text
+      </mat-card-content>
     </mat-card>
   </div>
+
   <div
     fxLayout="row"
     style="width: 60%; margin-top: 32px; max-width: 600px;"

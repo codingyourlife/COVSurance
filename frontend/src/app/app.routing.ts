@@ -44,6 +44,18 @@ export const rootRouterConfig: Routes = [
     ],
   },
   {
+    path: '',
+    component: AdminLayoutComponent,
+    children: [
+      {
+        path: 'account',
+        loadChildren: () =>
+          import('./views/account/account.module').then(m => m.AccountModule),
+        data: { title: 'Invest', breadcrumb: 'INVEST' },
+      },
+    ],
+  },
+  {
     path: '**',
     redirectTo: 'sessions/404',
   },
