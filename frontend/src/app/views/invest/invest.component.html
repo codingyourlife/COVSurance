@@ -22,31 +22,61 @@
         Investieren um anderen Sicherheit zu geben.
       </h3>
       <p class="text-muted">Bereits ab 50€</p>
-      <form fxLayout="column" fxLayoutAlign="space-around center">
+      <form
+        [formGroup]="investForm"
+        fxLayout="column"
+        fxLayoutAlign="space-around center"
+      >
+        <mat-form-field appearance="outline" style="width: 100%;">
+          <mat-label>Risiko</mat-label>
+          <input
+            formControlName="risk"
+            type="text"
+            matInput
+            placeholder="Risiko"
+          />
+        </mat-form-field>
+
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>Betrag</mat-label>
-          <input type="number" matInput placeholder="Betrag" />
-          <span matSuffix>ganze Euro</span>
+          <input
+            formControlName="volume"
+            type="number"
+            matInput
+            placeholder="Betrag"
+          />
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>Prämie</mat-label>
-          <input type="number" matInput placeholder="Prämie" />
+          <input
+            formControlName="bonus"
+            type="number"
+            matInput
+            placeholder="Prämie"
+          />
           <span matSuffix>%</span>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>Zeitraum</mat-label>
-          <mat-select>
-            <mat-option value="may">Mai 2020</mat-option>
-            <mat-option value="june">Juni 2020</mat-option>
-            <mat-option value="july">Juli 2020</mat-option>
+          <mat-select formControlName="timeframe">
+            <mat-option
+              *ngFor="let timeframe of timeframes"
+              [value]="timeframe.id"
+            >
+              {{ timeframe.label }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
 
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>Gültig bis</mat-label>
-          <input matInput [matDatepicker]="picker" />
+          <input
+            formControlName="validUntil"
+            matInput
+            [matDatepicker]="picker"
+          />
           <mat-datepicker-toggle
             matSuffix
             [for]="picker"
@@ -69,9 +99,16 @@
           individuellen Risikoübernahmeprämie bezahlen, die jeder für sich
           selbst bestimmen kann.
         </p>
-        <mat-checkbox>Gelesen</mat-checkbox>
+        <mat-checkbox [(ngModel)]="readTerm">Gelesen</mat-checkbox>
       </div>
-      <button mat-raised-button color="primary">INVESTIEREN</button>
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="!readTerm || investForm.invalid"
+        (click)="invest()"
+      >
+        INVESTIEREN
+      </button>
     </div>
   </div>
 </div>
