@@ -11,6 +11,7 @@ const { expect } = require("chai");
 const zero_address = "0x0000000000000000000000000000000000000000";
 
 const TokenFactory = contract.fromArtifact("TokenFactory");
+const InvestorCoin = contract.fromArtifact("InvestorCoin");
 
 describe("TokenFactory", function() {
   const [controller, unknown] = accounts;
@@ -37,14 +38,17 @@ describe("TokenFactory", function() {
 
     context("InsureeCoin", function() {
       it("create InsureeCoin", async function() {
-        const investorCoinReceipt = await this.tokenFactory.createInsureeCoin(
+        const investorCoin = await InvestorCoin.new("Demo", "DEMO", "18");
+        await investorCoin.transferOwnership(this.tokenFactory.address);
+        const insureeCoinReceipt = await this.tokenFactory.createInsureeCoin(
           "Cov Insuree 05/2020 10%",
+          investorCoin.address,
           {
             from: unknown
           }
         );
 
-        expectEvent(investorCoinReceipt, "InsureeCoinCreated", {
+        expectEvent(insureeCoinReceipt, "InsureeCoinCreated", {
           sender: unknown
         });
       });

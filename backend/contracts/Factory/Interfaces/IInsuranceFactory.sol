@@ -1,6 +1,6 @@
 pragma solidity ^0.5.5;
 
-contract IInsuranceFactory {
+interface IInsuranceFactory {
     function createInsuranceFor(
         string calldata tokenBaseNameInvstor,
         string calldata tokenBaseNameInsuree,

@@ -24,17 +24,21 @@ contract TokenFactory {
         return investorCoin;
     }
 
-    function createInsureeCoin(string memory tokenBaseName)
-        public
-        returns (InsureeCoin)
-    {
+    function createInsureeCoin(
+        string memory tokenBaseName,
+        address investorCoinAddress
+    ) public returns (InsureeCoin) {
         string memory symbol = "COVIns";
         uint8 decimals = 18;
+        InvestorCoin investorCoin = InvestorCoin(investorCoinAddress);
         InsureeCoin insureeCoin = new InsureeCoin(
             tokenBaseName,
             symbol,
             decimals
         );
+
+        insureeCoin.setReferenceInvestorCoin(investorCoinAddress);
+        investorCoin.setReferenceInsureeCoin(address(insureeCoin));
 
         emit InsureeCoinCreated(msg.sender, insureeCoin);
 

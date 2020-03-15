@@ -47,7 +47,8 @@ contract InsuranceFactory is IInsuranceFactory {
         );
 
         InsureeCoin insureeCoin = _tokenFactory.createInsureeCoin(
-            tokenBaseNameInsuree
+            tokenBaseNameInsuree,
+            address(investorCoin)
         );
 
         emit InsuranceCreated(
