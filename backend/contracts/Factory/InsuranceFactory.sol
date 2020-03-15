@@ -4,8 +4,9 @@ import "./MoneyVaultFactory.sol";
 import "./TokenFactory.sol";
 import "../Coins/InvestorCoin.sol";
 import "../Coins/InsureeCoin.sol";
+import "./Interfaces/IInsuranceFactory.sol";
 
-contract InsuranceFactory {
+contract InsuranceFactory is IInsuranceFactory {
     MoneyVaultFactory _moneyVaultFactory;
     TokenFactory _tokenFactory;
 
@@ -27,13 +28,13 @@ contract InsuranceFactory {
     }
 
     function createInsuranceFor(
-        string memory tokenBaseNameInvstor,
-        string memory tokenBaseNameInsuree,
+        string calldata tokenBaseNameInvstor,
+        string calldata tokenBaseNameInsuree,
         uint256 insurancePeriodStart,
         uint256 insurancePeriodEnd,
         uint256 signaturePeriodStart,
         uint256 signaturePeriodEnd
-    ) public {
+    ) external {
         _moneyVaultFactory.createMoneyVault(
             insurancePeriodStart,
             insurancePeriodEnd,
