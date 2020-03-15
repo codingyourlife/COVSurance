@@ -11,6 +11,8 @@ const { expect } = require("chai");
 const zero_address = "0x0000000000000000000000000000000000000000";
 
 const MoneyVault = contract.fromArtifact("MoneyVault");
+const InvestorCoin = contract.fromArtifact("InvestorCoin");
+const InsureeCoin = contract.fromArtifact("InsureeCoin");
 
 describe("MoneyVault", function() {
   const [controller, investor1, insuree1] = accounts;
@@ -27,15 +29,21 @@ describe("MoneyVault", function() {
       const signaturePeriodStart = insurancePeriodStart;
       const signaturePeriodEnd = insurancePeriodEnd;
 
+      this.investorCoin = await InvestorCoin.new("DEMOInv", "DEMOInv", 18);
+      this.insureeCoin = await InsureeCoin.new("DEMOInv", "DEMOInv", 18);
+
       this.moneyVault = await MoneyVault.new(
         insurancePeriodStart,
         insurancePeriodEnd,
         signaturePeriodStart,
         signaturePeriodEnd,
-        zero_address,
-        zero_address,
+        this.investorCoin.address,
+        this.insureeCoin.address,
         "10"
       );
+
+      await this.investorCoin.addMinter(this.moneyVault.address);
+      await this.insureeCoin.addMinter(this.moneyVault.address);
     });
 
     context("investments", function() {
@@ -250,10 +258,13 @@ describe("MoneyVault", function() {
           insurancePeriodEnd,
           signaturePeriodStart,
           signaturePeriodEnd,
-          zero_address,
-          zero_address,
+          this.investorCoin.address,
+          this.insureeCoin.address,
           "10"
         );
+
+        await this.investorCoin.addMinter(tmpMoneyVault.address);
+        await this.insureeCoin.addMinter(tmpMoneyVault.address);
 
         await tmpMoneyVault.investorDeposits(investor1, {
           value: amount

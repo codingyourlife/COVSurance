@@ -106,12 +106,13 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         );
         require(_signaturePeriodStart <= now, "too early");
         require(_signaturePeriodEnd >= now, "too late");
+        require(address(_investorCoin) != address(0), "no investorCoin");
 
         _investorDeposits[payee] = _investorDeposits[payee].add(msg.value);
         _totalInvestorDeposits = _totalInvestorDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        // _investorCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
+        _investorCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
 
         emit DepositedByInvestor(payee, msg.value);
 
@@ -130,6 +131,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         );
         require(_signaturePeriodStart <= now, "too early");
         require(_signaturePeriodEnd >= now, "too late");
+        require(address(_insureeCoin) != address(0), "no insureeCoin");
 
         require(
             _totalInvestorDeposits >= _totalInsureeDeposits.add(msg.value),
@@ -140,7 +142,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        // _insureeCoin.mint(payee, factorizedAmount.mul(1000)); //TODO: mul1000 is just for testnet
+        _insureeCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
 
         emit DepositedByInsuree(payee, msg.value);
 
