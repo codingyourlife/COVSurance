@@ -55,14 +55,14 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" style="width: 100%;">
-              <mat-label>Volumen</mat-label>
+              <mat-label>Versicherungssumme</mat-label>
               <input
                 type="number"
                 matInput
                 placeholder="Volumen"
                 formControlName="volume"
               />
-              <mat-error>Mindest Volumen 50€</mat-error>
+              <mat-error>Mindest Versicherungssumme 50€</mat-error>
             </mat-form-field>
           </form>
           <mat-progress-bar
@@ -141,7 +141,7 @@
                 class="full-width"
                 style="border-left: 1px solid gray; padding-left: 16px;"
               >
-                {{ calculationResult.totalBonus }} €
+                {{ calculationResult.totalBonus.toFixed(2) }} €
               </div>
             </div>
 
@@ -158,7 +158,7 @@
                 class="full-width"
                 style="border-left: 1px solid gray; padding-left: 16px;"
               >
-                {{ calculationResult.averageBonusPercent * 100 }} %
+                {{ (calculationResult.averageBonusPercent * 100).toFixed(2) }} %
               </div>
             </div>
 
@@ -183,6 +183,9 @@
                 [limit]="8"
                 [rows]="calculationResult.subInvestments"
                 [columns]="columnsInsure"
+                [loadingIndicator]="
+                  calculationResult.subInvestments.length === 0
+                "
               ></ngx-datatable>
             </div>
           </div>
@@ -234,6 +237,7 @@
                 [limit]="8"
                 [rows]="data"
                 [columns]="columnsOverview"
+                [loadingIndicator]="data.length === 0"
               ></ngx-datatable>
             </div>
           </div>

@@ -39,7 +39,26 @@ export class AccountComponent implements OnInit {
   myInsurances: ComulatedInvestmentDisplay[] = []
   tempInsurances: ComulatedInvestmentDisplay[] = []
 
-  columns = [
+  investColumns = [
+    {
+      prop: 'risk',
+      name: 'Risiko',
+    },
+    {
+      prop: 'month',
+      name: 'Monat',
+    },
+    {
+      prop: 'sum',
+      name: 'Investmentsumme',
+    },
+    {
+      prop: 'bonus',
+      name: 'Prämie',
+    },
+  ]
+
+  insureColumns = [
     {
       prop: 'risk',
       name: 'Risiko',
