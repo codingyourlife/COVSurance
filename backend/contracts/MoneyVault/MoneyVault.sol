@@ -4,10 +4,11 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Secondary.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./Interfaces/IMoneyVaultInvestor.sol";
+import "./Interfaces/ITransferablePrimary.sol";
 import "../Coins/Interfaces/IMintable.sol";
 
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
-contract MoneyVault is IMoneyVaultInvestor, Secondary {
+contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
     using SafeMath for uint256;
     using Address for address;
 
