@@ -20,7 +20,8 @@ const InvestorCoin = contract.fromArtifact("InvestorCoin");
 describe("InsuranceFactory", function() {
   const [controller, investor1, insuree1] = accounts;
 
-  const amount = ether("1");
+  const amountInvestor = ether("1");
+  const amountInsuree = ether("0.2");
 
   const signatureEnd = ether("999999999").toString();
 
@@ -67,8 +68,8 @@ describe("InsuranceFactory", function() {
 
         const moneyVaultContract = await MoneyVault.at(moneyVault);
         await moneyVaultContract.investorDeposits({
-          from: insuree1,
-          value: amount
+          from: investor1,
+          value: amountInvestor
         });
 
         const investorCoinTotalSupply = await investorCoinContract.totalSupply();
@@ -86,7 +87,7 @@ describe("InsuranceFactory", function() {
           "1",
           "2",
           signatureEnd,
-          "10"
+          "20"
         );
 
         const moneyVault = deployReceipt.logs[0].args.moneyVault;
@@ -96,19 +97,19 @@ describe("InsuranceFactory", function() {
         const moneyVaultContract = await MoneyVault.at(moneyVault);
 
         await moneyVaultContract.investorDeposits({
-          from: insuree1,
-          value: amount
+          from: investor1,
+          value: amountInvestor
         });
 
         await moneyVaultContract.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
 
         const insureeCoinTotalSupply = await insureeCoinContract.totalSupply();
 
         expect(insureeCoinTotalSupply.toString()).to.equal(
-          ether("100").toString()
+          ether("1000").toString()
         ); //TODO: mul1000 is just for testnet
       });
     });

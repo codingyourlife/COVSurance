@@ -6,9 +6,15 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "./Interfaces/IMoneyVaultInvestor.sol";
 import "./Interfaces/ITransferablePrimary.sol";
 import "../Coins/Interfaces/IMintable.sol";
+import "./Libraries/DSMath.sol";
 
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
-contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
+contract MoneyVault is
+    IMoneyVaultInvestor,
+    ITransferablePrimary,
+    Secondary,
+    DSMath
+{
     using SafeMath for uint256;
     using Address for address;
 
@@ -143,7 +149,12 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        _insureeCoin.mint(msg.sender, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
+        uint256 bcRateInPercent = (uint256(_rateInPercent).mul(1e18)) / 100; //0.2bc
+
+        _insureeCoin.mint(
+            msg.sender,
+            wdiv(msg.value, bcRateInPercent).mul(1000)
+        ); //TODO: mul1000 is just for testnet
 
         emit DepositedByInsuree(msg.sender, msg.value);
 
