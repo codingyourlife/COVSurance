@@ -23,6 +23,19 @@ contract InsuranceFactory is IInsuranceFactory {
         address moneyVault
     );
 
+    //two events because of stack size limit
+    event InsuranceCreatedDetails(
+        address indexed sender,
+        uint256 insurancePeriodStart,
+        uint256 insurancePeriodEnd,
+        uint256 signaturePeriodStart,
+        uint256 signaturePeriodEnd,
+        address investorCoin,
+        address insureeCoin,
+        address moneyVault,
+        uint8 rateInPercent
+    );
+
     constructor(address moneyVaultFactory, address tokenFactory) public {
         _moneyVaultFactory = IMoneyVaultFactory(moneyVaultFactory);
         _tokenFactory = ITokenFactory(tokenFactory);
@@ -68,6 +81,18 @@ contract InsuranceFactory is IInsuranceFactory {
             investorCoin,
             insureeCoin,
             moneyVault
+        );
+
+        emit InsuranceCreatedDetails(
+            msg.sender,
+            insurancePeriodStart,
+            insurancePeriodEnd,
+            signaturePeriodStart,
+            signaturePeriodEnd,
+            investorCoin,
+            insureeCoin,
+            moneyVault,
+            rateInPercent
         );
 
         return (address(investorCoin), address(insureeCoin));

@@ -42,6 +42,7 @@ describe("InsuranceFactory", function() {
           "10"
         );
         expectEvent(deployReceipt, "InsuranceCreated");
+        expectEvent(deployReceipt, "InsuranceCreatedDetails");
       });
     });
   });
