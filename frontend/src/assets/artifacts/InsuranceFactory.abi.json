@@ -1,32 +1,123 @@
 [
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "address",
+        "name": "moneyVaultFactory",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenFactory",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
         "name": "tokenNameInvestor",
         "type": "string"
       },
       {
+        "indexed": false,
+        "internalType": "string",
         "name": "tokenNameInsuree",
         "type": "string"
       },
       {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "insurancePeriodStart",
         "type": "uint256"
       },
       {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "insurancePeriodEnd",
         "type": "uint256"
       },
       {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "signaturePeriodStart",
         "type": "uint256"
       },
       {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "signaturePeriodEnd",
         "type": "uint256"
       },
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "investorCoin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "insureeCoin",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "moneyVault",
+        "type": "address"
+      }
+    ],
+    "name": "InsuranceCreated",
+    "type": "event"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "tokenNameInvestor",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "tokenNameInsuree",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "insurancePeriodStart",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "insurancePeriodEnd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "signaturePeriodStart",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "signaturePeriodEnd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
         "name": "rateInPercent",
         "type": "uint8"
       }
@@ -34,11 +125,13 @@
     "name": "createInsuranceFor",
     "outputs": [
       {
-        "name": "investorCoin",
+        "internalType": "address",
+        "name": "",
         "type": "address"
       },
       {
-        "name": "insureeCoin",
+        "internalType": "address",
+        "name": "",
         "type": "address"
       }
     ],
