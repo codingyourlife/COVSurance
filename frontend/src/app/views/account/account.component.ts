@@ -50,7 +50,7 @@ export class AccountComponent implements OnInit {
     },
     {
       prop: 'sum',
-      name: 'Volumen',
+      name: 'Versicherungssumme',
     },
     {
       prop: 'bonus',

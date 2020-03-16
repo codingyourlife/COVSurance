@@ -49,7 +49,7 @@ export class InsureComponent implements OnInit {
   possibleTimeframes: string[] = []
   possibleRisks: string[] = []
   data: ComulatedInvestmentDisplay[] = []
-  columns = [
+  columnsInsure = [
     {
       prop: 'risk',
       name: 'Risiko',
@@ -60,7 +60,26 @@ export class InsureComponent implements OnInit {
     },
     {
       prop: 'sum',
-      name: 'Volumen',
+      name: 'Versicherungssumme',
+    },
+    {
+      prop: 'bonus',
+      name: 'Prämie',
+    },
+  ]
+
+  columnsOverview = [
+    {
+      prop: 'risk',
+      name: 'Risiko',
+    },
+    {
+      prop: 'month',
+      name: 'Monat',
+    },
+    {
+      prop: 'sum',
+      name: 'angebotene Maximalversicherungssumme',
     },
     {
       prop: 'bonus',
@@ -116,23 +135,29 @@ export class InsureComponent implements OnInit {
     }
   }
 
+  private reset() {
+    this.invested = false
+    this.calculationRawResult = null
+    this.calculationResult = null
+    this.insuranceForm.reset()
+    this.calcPanel.close()
+  }
+
   confirmInvestment() {
     this.invested = true
     this.dataService
       .commitInsurance(this.calculationRawResult)
       .then(() => {
-        this.invested = false
-        this.calculationRawResult = null
-        this.calculationRawResult = null
-        this.calcPanel.close()
+        this.reset()
       })
       .catch(err => {
         console.error(err)
-        this.invested = false
-        this.calculationRawResult = null
-        this.calculationRawResult = null
-        this.calcPanel.close()
+        this.reset()
       })
+  }
+
+  cancelInvestment() {
+    this.reset()
   }
 
   ngOnInit() {}

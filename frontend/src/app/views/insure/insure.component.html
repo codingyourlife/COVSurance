@@ -182,9 +182,15 @@
                 [rowHeight]="50"
                 [limit]="8"
                 [rows]="calculationResult.subInvestments"
-                [columns]="columns"
+                [columns]="columnsInsure"
               ></ngx-datatable>
             </div>
+          </div>
+          <mat-action-row
+            fxLayoutAlign="center center"
+            fxlayout="row"
+            fxLayoutGap="32px"
+          >
             <button
               mat-raised-button
               color="primary"
@@ -192,7 +198,10 @@
             >
               Versicherung abschließen
             </button>
-          </div>
+            <button mat-raised-button color="warn" (click)="cancelInvestment()">
+              abbrechen
+            </button>
+          </mat-action-row>
         </mat-expansion-panel>
 
         <mat-expansion-panel (opened)="loadData()">
@@ -224,7 +233,7 @@
                 [rowHeight]="50"
                 [limit]="8"
                 [rows]="data"
-                [columns]="columns"
+                [columns]="columnsOverview"
               ></ngx-datatable>
             </div>
           </div>
