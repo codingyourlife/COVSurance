@@ -48,7 +48,8 @@ describe("MoneyVault", function() {
 
     context("investments", function() {
       it("investorDeposits and investment is parked like in an escrow", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
         const depositOfInvestor = await this.moneyVault.depositsOfInvestor(
@@ -80,7 +81,8 @@ describe("MoneyVault", function() {
         );
 
         await expectRevert(
-          tmpMoneyVault.investorDeposits(investor1, {
+          tmpMoneyVault.investorDeposits({
+            from: investor1,
             value: amount
           }),
           "too early"
@@ -109,7 +111,8 @@ describe("MoneyVault", function() {
         );
 
         await expectRevert(
-          tmpMoneyVault.investorDeposits(investor1, {
+          tmpMoneyVault.investorDeposits({
+            from: investor1,
             value: amount
           }),
           "too late"
@@ -118,11 +121,13 @@ describe("MoneyVault", function() {
 
       it("insureeDeposits are saved", async function() {
         //investorDeposits required
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
 
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
@@ -154,14 +159,16 @@ describe("MoneyVault", function() {
         );
 
         await expectRevert(
-          tmpMoneyVault.investorDeposits(investor1, {
+          tmpMoneyVault.investorDeposits({
+            from: investor1,
             value: amount
           }),
           "too early"
         );
 
         await expectRevert(
-          tmpMoneyVault.insureeDeposits(insuree1, {
+          tmpMoneyVault.insureeDeposits({
+            from: insuree1,
             value: amount
           }),
           "wrong state for investment."
@@ -169,10 +176,12 @@ describe("MoneyVault", function() {
       });
 
       it("totalInvestorDeposits and totalInsureeDeposits", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: "20"
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: "10"
         });
 
@@ -188,12 +197,14 @@ describe("MoneyVault", function() {
 
     context("thresholds", function() {
       it("insuree requests more than available", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: "10"
         });
 
         await expectRevert(
-          this.moneyVault.insureeDeposits(insuree1, {
+          this.moneyVault.insureeDeposits({
+            from: insuree1,
             value: amount
           }),
           "investor amount too low"
@@ -209,7 +220,8 @@ describe("MoneyVault", function() {
       });
 
       it("first investor investment changes state to MoneyVaultState.InvestorFound", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
 
@@ -218,10 +230,12 @@ describe("MoneyVault", function() {
       });
 
       it("first insuree investment changes state to MoneyVaultState.InsureeFound", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
 
@@ -230,10 +244,12 @@ describe("MoneyVault", function() {
       });
 
       it("setActive as intended", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await this.moneyVault.setActive();
@@ -266,20 +282,24 @@ describe("MoneyVault", function() {
         await this.investorCoin.addMinter(tmpMoneyVault.address);
         await this.insureeCoin.addMinter(tmpMoneyVault.address);
 
-        await tmpMoneyVault.investorDeposits(investor1, {
+        await tmpMoneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await tmpMoneyVault.insureeDeposits(insuree1, {
+        await tmpMoneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await expectRevert(tmpMoneyVault.setActive(), "too early");
       });
 
       it("closeCase(insuredCaseHappened=true) as intended", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await this.moneyVault.setActive();
@@ -290,10 +310,12 @@ describe("MoneyVault", function() {
       });
 
       it("closeCase(insuredCaseHappened=false) as intended", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await this.moneyVault.setActive();
@@ -304,7 +326,8 @@ describe("MoneyVault", function() {
       });
 
       it("setNoInsureeFound as intended", async function() {
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
         await this.moneyVault.setNoInsureeFound();
@@ -318,34 +341,41 @@ describe("MoneyVault", function() {
       it("withdraw as investor as intended if insuredCaseHappened=false", async function() {
         const balanceTracker = await balance.tracker(investor1);
 
-        await this.moneyVault.investorDeposits(investor1, {
-          value: amount
+        await this.moneyVault.investorDeposits({
+          value: amount,
+          from: investor1,
+          gasPrice: 0
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
 
-        await this.moneyVault.claimAsInvestor(investor1);
+        await this.moneyVault.claimAsInvestor({ from: investor1, gasPrice: 0 });
 
-        expect(await balanceTracker.delta()).to.be.bignumber.equal(amount);
+        expect((await balanceTracker.delta()).toString()).to.be.bignumber.equal(
+          "0"
+        );
       });
 
       it("withdraw as investor if insuredCaseHappened=true should fail", async function() {
         const balanceTracker = await balance.tracker(investor1);
 
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
 
         await expectRevert(
-          this.moneyVault.claimAsInvestor(investor1),
+          this.moneyVault.claimAsInvestor({ from: investor1 }),
           "not ActiveInvestorBenefits"
         );
       });
@@ -353,32 +383,41 @@ describe("MoneyVault", function() {
       it("withdraw as insuree as intended if insuredCaseHappened=true", async function() {
         const balanceTracker = await balance.tracker(insuree1);
 
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
-          value: amount
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
+          value: amount,
+          gasPrice: 0
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
 
-        await this.moneyVault.claimAsInsuree(insuree1);
+        await this.moneyVault.claimAsInsuree({ from: insuree1, gasPrice: 0 });
+
+        expect((await balanceTracker.delta()).toString()).to.be.bignumber.equal(
+          "0"
+        );
       });
 
       it("withdraw as insuree if insuredCaseHappened=false should fail", async function() {
         const balanceTracker = await balance.tracker(insuree1);
 
-        await this.moneyVault.investorDeposits(investor1, {
+        await this.moneyVault.investorDeposits({
+          from: investor1,
           value: amount
         });
-        await this.moneyVault.insureeDeposits(insuree1, {
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
           value: amount
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
 
         await expectRevert(
-          this.moneyVault.claimAsInsuree(insuree1),
+          this.moneyVault.claimAsInsuree({ from: insuree1 }),
           "not ActiveInsureeBenefits"
         );
       });
