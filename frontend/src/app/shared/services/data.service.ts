@@ -36,82 +36,11 @@ export interface CaluclatedInvestment {
 })
 export class DataService {
   static lastId = 9;
+  static fromBlock = (17405256 - 1000).toString();
   private fakeInvestments: Investment[] = [
     {
       id: 0,
-      risk: "Pandemie",
-      month: 4,
-      year: 2020,
-      sum: 10000,
-      bonus: 0.1
-    },
-    {
-      id: 1,
-      risk: "Pandemie",
-      month: 4,
-      year: 2020,
-      sum: 5000,
-      bonus: 0.1
-    },
-    {
-      id: 2,
-      risk: "Pandemie",
-      month: 4,
-      year: 2020,
-      sum: 2000,
-      bonus: 0.1
-    },
-    {
-      id: 3,
-      risk: "Pandemie",
-      month: 4,
-      year: 2020,
-      sum: 100000,
-      bonus: 0.1
-    },
-    {
-      id: 4,
-      risk: "Pandemie",
-      month: 4,
-      year: 2020,
-      sum: 50000,
-      bonus: 0.12
-    },
-    {
-      id: 5,
-      risk: "Pandemie",
-      month: 5,
-      year: 2020,
-      sum: 70000,
-      bonus: 0.09
-    },
-    {
-      id: 6,
-      risk: "Pandemie",
-      month: 5,
-      year: 2020,
-      sum: 5500,
-      bonus: 0.09
-    },
-    {
-      id: 7,
-      risk: "Pandemie",
-      month: 5,
-      year: 2020,
-      sum: 90000,
-      bonus: 0.12
-    },
-    {
-      id: 8,
-      risk: "Apocalypse",
-      month: 6,
-      year: 2020,
-      sum: 210000,
-      bonus: 0.18
-    },
-    {
-      id: 9,
-      risk: "Pandemie",
+      risk: "LOCAL DEMO",
       month: 6,
       year: 2020,
       sum: 210000,
@@ -123,14 +52,92 @@ export class DataService {
   private _myInsurances: CaluclatedInvestment[] = [];
 
   private myAcc: string;
+  private contract: any;
+  private locator: any;
 
   constructor(@Inject(WEB3) private web3: Web3, private http: HttpClient) {
     this.init().catch(err => console.error(err));
   }
 
+  getInvestmentBasisDataFromEvent(logEntry: any) {
+    const tokenNameInvestor = logEntry.returnValues["tokenNameInvestor"];
+    const tokenNameInsuree = logEntry.returnValues["tokenNameInsuree"];
+    const insurancePeriodStart = logEntry.returnValues["insurancePeriodStart"];
+    const insurancePeriodEnd = logEntry.returnValues["insurancePeriodEnd"];
+    const signaturePeriodStart = logEntry.returnValues["signaturePeriodStart"];
+    const signaturePeriodEnd = logEntry.returnValues["signaturePeriodEnd"];
+    const investorCoin = logEntry.returnValues["investorCoin"];
+    const insureeCoin = logEntry.returnValues["insureeCoin"];
+    const moneyVault = logEntry.returnValues["moneyVault"];
+    // const rateInPercent = logEntry.returnValues["rateInPercent"]; //TODO
+
+    const investmentBasisData = {
+      risk: tokenNameInvestor.substring(0, tokenNameInvestor.length - 12),
+      bonus: tokenNameInvestor.substring(
+        tokenNameInvestor.length - 3,
+        tokenNameInvestor.length - 1
+      ), //TODO: merge rateInPercent from InsuranceCreatedDetails event if same address of investorcoin and insureeCoin
+      month: new Date(insurancePeriodStart * 1000).getMonth(),
+      year: new Date(insurancePeriodStart * 1000).getFullYear(),
+      investorCoin: investorCoin,
+      insureeCoin: insureeCoin,
+      moneyVault: moneyVault
+    };
+
+    return investmentBasisData;
+  }
+
   async init() {
     const accounts = await this.web3.eth.getAccounts();
     this.myAcc = accounts[0];
+
+    this.locator = await this.http
+      .get("../../../assets/artifacts/Locator.json")
+      .toPromise()
+      .then(res => res as any);
+    const InsuranceFactoryAbi = await this.http
+      .get("../../../assets/artifacts/InsuranceFactory.abi.json")
+      .toPromise()
+      .then(res => res as any);
+
+    this.contract = new this.web3.eth.Contract(
+      InsuranceFactoryAbi,
+      this.locator.InsuranceFactory,
+      {
+        from: this.myAcc
+      }
+    );
+
+    // console.log(contract);
+
+    const allEvents = await this.contract.getPastEvents("InsuranceCreated", {
+      fromBlock: DataService.fromBlock,
+      toBlock: "latest"
+    });
+
+    await Promise.all(
+      allEvents.map(logEntry => {
+        console.log(`logEntry.returnValues:`);
+
+        const investmentBasisData = this.getInvestmentBasisDataFromEvent(
+          logEntry
+        );
+
+        console.log("investmentBasisData:");
+        console.log(investmentBasisData);
+
+        const investment: Investment = {
+          id: ++DataService.lastId,
+          risk: investmentBasisData.risk,
+          bonus: investmentBasisData.bonus,
+          month: investmentBasisData.month,
+          year: investmentBasisData.year,
+          sum: 0 //TODO: invest into vault
+        };
+
+        this.fakeInvestments.push(investment);
+      })
+    );
   }
 
   private get investments(): Investment[] {
@@ -242,27 +249,12 @@ export class DataService {
       validUntilSecond: Math.floor(validUntil.valueOf() / 1000)
     };
     // console.log(blockChainInvestment);
-    const locator = await this.http
-      .get("../../../assets/artifacts/Locator.json")
-      .toPromise()
-      .then(res => res as any);
-    const InsuranceFactoryAbi = await this.http
-      .get("../../../assets/artifacts/InsuranceFactory.abi.json")
-      .toPromise()
-      .then(res => res as any);
-    const contract = new this.web3.eth.Contract(
-      InsuranceFactoryAbi,
-      locator.InsuranceFactory,
-      {
-        from: this.myAcc
-      }
-    );
-    console.log(contract);
+
     const tokenNameInvest = `${risk} investor ${bonus * 100}%`;
     const tokenNameInsuree = `${risk} insuree ${bonus * 100}%`;
     const rateInPercent = this.web3.utils.toWei(bonus + "", "ether");
 
-    const res = await contract.methods
+    const res = await this.contract.methods
       .createInsuranceFor(
         tokenNameInvest,
         tokenNameInsuree,
@@ -275,54 +267,17 @@ export class DataService {
       .send();
     console.log(res);
 
-    const allEvents = await contract.getPastEvents("InsuranceCreated", {
-      fromBlock: (17405256 - 1000).toString(),
+    const allEvents = await this.contract.getPastEvents("InsuranceCreated", {
+      fromBlock: DataService.fromBlock,
       toBlock: "latest"
     });
 
     const currentInsuranceCreatedEvent = allEvents.pop();
-    console.log("currentInsuranceCreatedEvent: ");
-
-    console.log(currentInsuranceCreatedEvent);
-
-    await Promise.all(
-      allEvents.map(logEntry => {
-        console.log(`logEntry.returnValues:`);
-        const tokenNameInvestor = logEntry.returnValues["tokenNameInvestor"];
-        const tokenNameInsuree = logEntry.returnValues["tokenNameInsuree"];
-        const insurancePeriodStart =
-          logEntry.returnValues["insurancePeriodStart"];
-        const insurancePeriodEnd = logEntry.returnValues["insurancePeriodEnd"];
-        const signaturePeriodStart =
-          logEntry.returnValues["signaturePeriodStart"];
-        const signaturePeriodEnd = logEntry.returnValues["signaturePeriodEnd"];
-        const rateInPercent = logEntry.returnValues["rateInPercent"];
-
-        const investmentBasisData = {
-          risk: tokenNameInvestor.substring(0, tokenNameInvestor.length - 12),
-          bonus: tokenNameInvestor.substring(
-            tokenNameInvestor.length - 3,
-            tokenNameInvestor.length - 1
-          ), //TODO: put rateInPercent in event
-          month: new Date(insurancePeriodStart * 1000).getMonth(),
-          year: new Date(insurancePeriodStart * 1000).getFullYear()
-        };
-
-        console.log("investmentBasisData:");
-        console.log(investmentBasisData);
-
-        const investment: Investment = {
-          id: ++DataService.lastId,
-          risk: investmentBasisData.risk,
-          bonus: investmentBasisData.bonus,
-          month: investmentBasisData.month,
-          year: investmentBasisData.year,
-          sum: 0 //TODO: invest into vault
-        };
-
-        this.fakeInvestments.push(investment);
-      })
+    const currentInvestmentBasisData = this.getInvestmentBasisDataFromEvent(
+      currentInsuranceCreatedEvent
     );
+    console.log("currentInvestmentBasisData: ");
+    console.log(currentInvestmentBasisData);
 
     const investment: Investment = {
       id: ++DataService.lastId,
@@ -332,6 +287,29 @@ export class DataService {
       year,
       sum: volume
     };
+
+    const MoneyVaultAbi = await this.http
+      .get("../../../assets/artifacts/MoneyVault.abi.json")
+      .toPromise()
+      .then(res => res as any);
+
+    const moneyVaultContract = new this.web3.eth.Contract(
+      MoneyVaultAbi,
+      currentInvestmentBasisData.moneyVault,
+      {
+        from: this.myAcc
+      }
+    );
+
+    await moneyVaultContract.methods.investorDeposits().send({
+      from: this.myAcc,
+      value: this.web3.utils.toWei((volume / 10000).toString(), "ether") //TODO: divided by 10000 just for testnet. contract multiplies by 1000.
+    });
+
+    // await moneyVaultContract.methods.insureeDeposits().send({
+    //   from: this.myAcc,
+    //   value: this.web3.utils.toWei(volume / 1000 + "", "ether") //TODO: divided by 1000 just for testnet. contract multiplies by 1000.
+    // });
 
     this.myInvestments.push({ ...investment });
   }
