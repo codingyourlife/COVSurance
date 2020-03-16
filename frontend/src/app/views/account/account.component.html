@@ -32,7 +32,8 @@
             [rowHeight]="50"
             [limit]="8"
             [rows]="myInvestments"
-            [columns]="columns"
+            [columns]="investColumns"
+            [loadingIndicator]="myInvestments.length === 0"
           ></ngx-datatable>
         </div>
       </div>
@@ -70,7 +71,8 @@
             [rowHeight]="50"
             [limit]="8"
             [rows]="myInsurances"
-            [columns]="columns"
+            [columns]="insureColumns"
+            [loadingIndicator]="myInsurances.length === 0"
           ></ngx-datatable>
         </div>
       </div>

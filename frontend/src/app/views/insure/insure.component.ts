@@ -79,7 +79,7 @@ export class InsureComponent implements OnInit {
     },
     {
       prop: 'sum',
-      name: 'angebotene Maximalversicherungssumme',
+      name: 'Volumen',
     },
     {
       prop: 'bonus',
