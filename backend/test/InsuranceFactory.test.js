@@ -21,7 +21,7 @@ describe("InsuranceFactory", function() {
   const [controller, investor1, insuree1] = accounts;
 
   const amountInvestor = ether("1");
-  const amountInsuree = ether("0.2");
+  const amountInsuree = ether("0.3");
 
   const signatureEnd = ether("999999999").toString();
 
@@ -87,7 +87,7 @@ describe("InsuranceFactory", function() {
           "1",
           "2",
           signatureEnd,
-          "20"
+          "30"
         );
 
         const moneyVault = deployReceipt.logs[0].args.moneyVault;
