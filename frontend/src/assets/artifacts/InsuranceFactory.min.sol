@@ -340,8 +340,14 @@ interface IMoneyVaultInvestor {
     function depositsOfInvestor(address payee) external view returns (uint256);
     function getTotalInvestorDeposits() external view returns (uint256);
     function getTotalDeposits() external view returns (uint256);
-    function investorDeposits(address payee) external payable;
-    function claimAsInvestor(address payable payee) external;
+    function investorDeposits() external payable;
+    function claimAsInvestor() external;
+}
+
+// File: contracts/MoneyVault/Interfaces/ITransferablePrimary.sol
+
+interface ITransferablePrimary {
+    function transferPrimary(address recipient) external;
 }
 
 // File: contracts/Coins/Interfaces/IMintable.sol
@@ -354,7 +360,7 @@ interface IMintable {
 // File: contracts/MoneyVault/MoneyVault.sol
 
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
-contract MoneyVault is IMoneyVaultInvestor, Secondary {
+contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
     using SafeMath for uint256;
     using Address for address;
 
@@ -440,11 +446,7 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         return _totalDeposits;
     }
 
-    /**
-     * @dev Stores the sent amount as credit to be withdrawn.
-     * @param payee The destination address of the funds.
-     */
-    function investorDeposits(address payee) external payable onlyPrimary {
+    function investorDeposits() external payable {
         require(
             currentState == MoneyVaultState.Initial ||
                 currentState == MoneyVaultState.InvestorFound ||
@@ -455,22 +457,24 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
         require(_signaturePeriodEnd >= now, "too late");
         require(address(_investorCoin) != address(0), "no investorCoin");
 
-        _investorDeposits[payee] = _investorDeposits[payee].add(msg.value);
+        _investorDeposits[msg.sender] = _investorDeposits[msg.sender].add(
+            msg.value
+        );
         _totalInvestorDeposits = _totalInvestorDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        _investorCoin.mint(payee, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
+        _investorCoin.mint(msg.sender, msg.value.mul(1000)); //TODO: mul1000 is just for testnet
 
-        emit DepositedByInvestor(payee, msg.value);
+        emit DepositedByInvestor(msg.sender, msg.value);
 
         if (currentState == MoneyVaultState.Initial) {
             currentState = MoneyVaultState.InvestorFound;
 
-            emit StateChangedToInvestorFound(payee, msg.value);
+            emit StateChangedToInvestorFound(msg.sender, msg.value);
         }
     }
 
-    function insureeDeposits(address payee) external payable onlyPrimary {
+    function insureeDeposits() external payable {
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
@@ -485,18 +489,20 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
             "investor amount too low"
         );
 
-        _insureeDeposits[payee] = _insureeDeposits[payee].add(msg.value);
+        _insureeDeposits[msg.sender] = _insureeDeposits[msg.sender].add(
+            msg.value
+        );
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        _insureeCoin.mint(payee, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
+        _insureeCoin.mint(msg.sender, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
 
-        emit DepositedByInsuree(payee, msg.value);
+        emit DepositedByInsuree(msg.sender, msg.value);
 
         if (currentState == MoneyVaultState.InvestorFound) {
             currentState = MoneyVaultState.InsureeFound;
 
-            emit StateChangedToInsureeFound(payee, msg.value);
+            emit StateChangedToInsureeFound(msg.sender, msg.value);
         }
     }
 
@@ -538,22 +544,20 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
      * Calling contracts with fixed-gas limits is an anti-pattern and may break
      * contract interactions in network upgrades (hardforks).
      * https://diligence.consensys.net/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more.]
-     *
-     * @param payee The address whose funds will be withdrawn and transferred to.
      */
-    function claimAsInvestor(address payable payee) public onlyPrimary {
+    function claimAsInvestor() public {
         require(
             currentState == MoneyVaultState.ActiveInvestorBenefits,
             "not ActiveInvestorBenefits"
         );
 
-        uint256 payment = _investorDeposits[payee];
+        uint256 payment = _investorDeposits[msg.sender];
 
-        _investorDeposits[payee] = 0;
+        _investorDeposits[msg.sender] = 0;
 
-        payee.transfer(payment);
+        msg.sender.transfer(payment);
 
-        emit WithdrawnByInvestor(payee, payment);
+        emit WithdrawnByInvestor(msg.sender, payment);
     }
 
     /**
@@ -564,22 +568,20 @@ contract MoneyVault is IMoneyVaultInvestor, Secondary {
      * Calling contracts with fixed-gas limits is an anti-pattern and may break
      * contract interactions in network upgrades (hardforks).
      * https://diligence.consensys.net/blog/2019/09/stop-using-soliditys-transfer-now/[Learn more.]
-     *
-     * @param payee The address whose funds will be withdrawn and transferred to.
      */
-    function claimAsInsuree(address payable payee) public onlyPrimary {
+    function claimAsInsuree() public {
         require(
             currentState == MoneyVaultState.ActiveInsureeBenefits,
             "not ActiveInsureeBenefits"
         );
 
-        uint256 payment = _investorDeposits[payee];
+        uint256 payment = _insureeDeposits[msg.sender];
 
-        _investorDeposits[payee] = 0;
+        _insureeDeposits[msg.sender] = 0;
 
-        payee.transfer(payment);
+        msg.sender.transfer(payment);
 
-        emit WithdrawnByInvestor(payee, payment);
+        emit WithdrawnByInvestor(msg.sender, payment);
     }
 }
 
@@ -677,6 +679,19 @@ contract InsuranceFactory is IInsuranceFactory {
         address moneyVault
     );
 
+    //two events because of stack size limit
+    event InsuranceCreatedDetails(
+        address indexed sender,
+        uint256 insurancePeriodStart,
+        uint256 insurancePeriodEnd,
+        uint256 signaturePeriodStart,
+        uint256 signaturePeriodEnd,
+        address investorCoin,
+        address insureeCoin,
+        address moneyVault,
+        uint8 rateInPercent
+    );
+
     constructor(address moneyVaultFactory, address tokenFactory) public {
         _moneyVaultFactory = IMoneyVaultFactory(moneyVaultFactory);
         _tokenFactory = ITokenFactory(tokenFactory);
@@ -722,6 +737,18 @@ contract InsuranceFactory is IInsuranceFactory {
             investorCoin,
             insureeCoin,
             moneyVault
+        );
+
+        emit InsuranceCreatedDetails(
+            msg.sender,
+            insurancePeriodStart,
+            insurancePeriodEnd,
+            signaturePeriodStart,
+            signaturePeriodEnd,
+            investorCoin,
+            insureeCoin,
+            moneyVault,
+            rateInPercent
         );
 
         return (address(investorCoin), address(insureeCoin));

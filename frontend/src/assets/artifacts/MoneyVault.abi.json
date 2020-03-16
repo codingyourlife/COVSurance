@@ -203,13 +203,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "payee",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "name": "claimAsInsuree",
     "outputs": [],
     "payable": false,
@@ -218,13 +212,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address payable",
-        "name": "payee",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "name": "claimAsInvestor",
     "outputs": [],
     "payable": false,
@@ -350,13 +338,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "name": "insureeDeposits",
     "outputs": [],
     "payable": true,
@@ -365,13 +347,7 @@
   },
   {
     "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      }
-    ],
+    "inputs": [],
     "name": "investorDeposits",
     "outputs": [],
     "payable": true,

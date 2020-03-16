@@ -1,4 +1,3 @@
-
 // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
 pragma solidity ^0.5.0;
@@ -25,7 +24,9 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(address recipient, uint256 amount)
+        external
+        returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -34,7 +35,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(address owner, address spender)
+        external
+        view
+        returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -61,7 +65,9 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function transferFrom(address sender, address recipient, uint256 amount)
+        external
+        returns (bool);
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
@@ -75,13 +81,14 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20Detailed.sol
-
-pragma solidity ^0.5.0;
-
 
 /**
  * @dev Optional functions from the ERC20 standard.
@@ -96,7 +103,9 @@ contract ERC20Detailed is IERC20 {
      * these values are immutable: they can only be set once during
      * construction.
      */
-    constructor (string memory name, string memory symbol, uint8 decimals) public {
+    constructor(string memory name, string memory symbol, uint8 decimals)
+        public
+    {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
@@ -136,8 +145,6 @@ contract ERC20Detailed is IERC20 {
 
 // File: @openzeppelin/contracts/GSN/Context.sol
 
-pragma solidity ^0.5.0;
-
 /*
  * @dev Provides information about the current execution context, including the
  * sender of the transaction and its data. While these are generally available
@@ -151,7 +158,7 @@ pragma solidity ^0.5.0;
 contract Context {
     // Empty internal constructor, to prevent people from mistakenly deploying
     // an instance of this contract, which should be used via inheritance.
-    constructor () internal { }
+    constructor() internal {}
     // solhint-disable-previous-line no-empty-blocks
 
     function _msgSender() internal view returns (address payable) {
@@ -165,8 +172,6 @@ contract Context {
 }
 
 // File: @openzeppelin/contracts/math/SafeMath.sol
-
-pragma solidity ^0.5.0;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -222,7 +227,11 @@ library SafeMath {
      *
      * _Available since v2.4.0._
      */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+    function sub(uint256 a, uint256 b, string memory errorMessage)
+        internal
+        pure
+        returns (uint256)
+    {
         require(b <= a, errorMessage);
         uint256 c = a - b;
 
@@ -280,7 +289,11 @@ library SafeMath {
      *
      * _Available since v2.4.0._
      */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+    function div(uint256 a, uint256 b, string memory errorMessage)
+        internal
+        pure
+        returns (uint256)
+    {
         // Solidity only automatically asserts when dividing by 0
         require(b > 0, errorMessage);
         uint256 c = a / b;
@@ -317,18 +330,17 @@ library SafeMath {
      *
      * _Available since v2.4.0._
      */
-    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+    function mod(uint256 a, uint256 b, string memory errorMessage)
+        internal
+        pure
+        returns (uint256)
+    {
         require(b != 0, errorMessage);
         return a % b;
     }
 }
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20.sol
-
-pragma solidity ^0.5.0;
-
-
-
 
 /**
  * @dev Implementation of the {IERC20} interface.
@@ -357,9 +369,9 @@ pragma solidity ^0.5.0;
 contract ERC20 is Context, IERC20 {
     using SafeMath for uint256;
 
-    mapping (address => uint256) private _balances;
+    mapping(address => uint256) private _balances;
 
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
 
@@ -393,7 +405,11 @@ contract ERC20 is Context, IERC20 {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view returns (uint256) {
+    function allowance(address owner, address spender)
+        public
+        view
+        returns (uint256)
+    {
         return _allowances[owner][spender];
     }
 
@@ -421,9 +437,19 @@ contract ERC20 is Context, IERC20 {
      * - the caller must have allowance for `sender`'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public returns (bool) {
+    function transferFrom(address sender, address recipient, uint256 amount)
+        public
+        returns (bool)
+    {
         _transfer(sender, recipient, amount);
-        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
+        _approve(
+            sender,
+            _msgSender(),
+            _allowances[sender][_msgSender()].sub(
+                amount,
+                "ERC20: transfer amount exceeds allowance"
+            )
+        );
         return true;
     }
 
@@ -439,8 +465,15 @@ contract ERC20 is Context, IERC20 {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].add(addedValue));
+    function increaseAllowance(address spender, uint256 addedValue)
+        public
+        returns (bool)
+    {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].add(addedValue)
+        );
         return true;
     }
 
@@ -458,8 +491,18 @@ contract ERC20 is Context, IERC20 {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
+    function decreaseAllowance(address spender, uint256 subtractedValue)
+        public
+        returns (bool)
+    {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].sub(
+                subtractedValue,
+                "ERC20: decreased allowance below zero"
+            )
+        );
         return true;
     }
 
@@ -477,11 +520,16 @@ contract ERC20 is Context, IERC20 {
      * - `recipient` cannot be the zero address.
      * - `sender` must have a balance of at least `amount`.
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal {
+    function _transfer(address sender, address recipient, uint256 amount)
+        internal
+    {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
-        _balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
+        _balances[sender] = _balances[sender].sub(
+            amount,
+            "ERC20: transfer amount exceeds balance"
+        );
         _balances[recipient] = _balances[recipient].add(amount);
         emit Transfer(sender, recipient, amount);
     }
@@ -517,7 +565,10 @@ contract ERC20 is Context, IERC20 {
     function _burn(address account, uint256 amount) internal {
         require(account != address(0), "ERC20: burn from the zero address");
 
-        _balances[account] = _balances[account].sub(amount, "ERC20: burn amount exceeds balance");
+        _balances[account] = _balances[account].sub(
+            amount,
+            "ERC20: burn amount exceeds balance"
+        );
         _totalSupply = _totalSupply.sub(amount);
         emit Transfer(account, address(0), amount);
     }
@@ -551,13 +602,18 @@ contract ERC20 is Context, IERC20 {
      */
     function _burnFrom(address account, uint256 amount) internal {
         _burn(account, amount);
-        _approve(account, _msgSender(), _allowances[account][_msgSender()].sub(amount, "ERC20: burn amount exceeds allowance"));
+        _approve(
+            account,
+            _msgSender(),
+            _allowances[account][_msgSender()].sub(
+                amount,
+                "ERC20: burn amount exceeds allowance"
+            )
+        );
     }
 }
 
 // File: @openzeppelin/contracts/ownership/Ownable.sol
-
-pragma solidity ^0.5.0;
 
 /**
  * @dev Contract module which provides a basic access control mechanism, where
@@ -571,12 +627,15 @@ pragma solidity ^0.5.0;
 contract Ownable is Context {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal {
+    constructor() internal {
         address msgSender = _msgSender();
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -628,16 +687,16 @@ contract Ownable is Context {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      */
     function _transferOwnership(address newOwner) internal {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
 }
 
 // File: contracts/Coins/Interfaces/IInvestorCoin.sol
-
-pragma solidity ^0.5.5;
-
 
 interface IInvestorCoin {
     function getInsureeCoin() external view returns (IERC20 insureeCoin);
@@ -647,15 +706,11 @@ interface IInvestorCoin {
 
 // File: contracts/Coins/Interfaces/ITransferableOwnership.sol
 
-pragma solidity ^0.5.5;
-
 interface ITransferableOwnership {
     function transferOwnership(address newOwner) external;
 }
 
 // File: @openzeppelin/contracts/access/Roles.sol
-
-pragma solidity ^0.5.0;
 
 /**
  * @title Roles
@@ -663,7 +718,7 @@ pragma solidity ^0.5.0;
  */
 library Roles {
     struct Role {
-        mapping (address => bool) bearer;
+        mapping(address => bool) bearer;
     }
 
     /**
@@ -686,17 +741,17 @@ library Roles {
      * @dev Check if an account has this role.
      * @return bool
      */
-    function has(Role storage role, address account) internal view returns (bool) {
+    function has(Role storage role, address account)
+        internal
+        view
+        returns (bool)
+    {
         require(account != address(0), "Roles: account is the zero address");
         return role.bearer[account];
     }
 }
 
 // File: @openzeppelin/contracts/access/roles/MinterRole.sol
-
-pragma solidity ^0.5.0;
-
-
 
 contract MinterRole is Context {
     using Roles for Roles.Role;
@@ -706,12 +761,15 @@ contract MinterRole is Context {
 
     Roles.Role private _minters;
 
-    constructor () internal {
+    constructor() internal {
         _addMinter(_msgSender());
     }
 
     modifier onlyMinter() {
-        require(isMinter(_msgSender()), "MinterRole: caller does not have the Minter role");
+        require(
+            isMinter(_msgSender()),
+            "MinterRole: caller does not have the Minter role"
+        );
         _;
     }
 
@@ -740,10 +798,6 @@ contract MinterRole is Context {
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20Mintable.sol
 
-pragma solidity ^0.5.0;
-
-
-
 /**
  * @dev Extension of {ERC20} that adds a set of accounts with the {MinterRole},
  * which have permission to mint (create) new tokens as they see fit.
@@ -758,7 +812,11 @@ contract ERC20Mintable is ERC20, MinterRole {
      *
      * - the caller must have the {MinterRole}.
      */
-    function mint(address account, uint256 amount) public onlyMinter returns (bool) {
+    function mint(address account, uint256 amount)
+        public
+        onlyMinter
+        returns (bool)
+    {
         _mint(account, amount);
         return true;
     }
@@ -766,24 +824,12 @@ contract ERC20Mintable is ERC20, MinterRole {
 
 // File: contracts/Coins/Interfaces/IMintable.sol
 
-pragma solidity ^0.5.5;
-
 interface IMintable {
     function mint(address account, uint256 amount) external returns (bool);
     function addMinter(address account) external;
 }
 
 // File: contracts/Coins/InvestorCoin.sol
-
-pragma solidity ^0.5.5;
-
-
-
-
-
-
-
-
 
 contract InvestorCoin is
     IInvestorCoin,
@@ -811,14 +857,6 @@ contract InvestorCoin is
 
 // File: contracts/Coins/InsureeCoin.sol
 
-pragma solidity ^0.5.5;
-
-
-
-
-
-
-
 contract InsureeCoin is
     ITransferableOwnership,
     IMintable,
@@ -844,8 +882,6 @@ contract InsureeCoin is
 
 // File: contracts/Factory/Interfaces/ITokenFactory.sol
 
-pragma solidity ^0.5.5;
-
 interface ITokenFactory {
     function createCoins(
         string calldata tokenNameInvestorCoin,
@@ -854,11 +890,6 @@ interface ITokenFactory {
 }
 
 // File: contracts/Factory/TokenFactory.sol
-
-pragma solidity ^0.5.5;
-
-
-
 
 contract TokenFactory is ITokenFactory {
     event InvestorCoinCreated(address indexed sender, InvestorCoin coin);
