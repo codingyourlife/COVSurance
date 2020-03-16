@@ -73,6 +73,9 @@ export class InsureComponent implements OnInit {
   calculating: boolean
 
   calculationResult: CalculatedInvestmentDisplay
+  calculationRawResult: CaluclatedInvestment
+
+  invested: boolean
 
   constructor(private dataService: DataService) {
     this.insuranceForm = new FormGroup({
@@ -82,7 +85,7 @@ export class InsureComponent implements OnInit {
     })
   }
 
-  calculateInvestment() {
+  async calculateInvestment() {
     this.calculating = true
     const risk: string = this.insuranceForm.get('risk').value
     const timeframe: string = this.insuranceForm.get('timeframe').value
@@ -91,30 +94,51 @@ export class InsureComponent implements OnInit {
     )
     const year: number = Number(timeframe.split(' ')[1])
     const sum: number = this.insuranceForm.get('volume').value
-    const tempCalcRes = this.dataService.calculateInvestment(
+    this.calculationRawResult = await this.dataService.calculateInvestment(
       risk,
       month,
       year,
       sum,
     )
     this.calculating = false
-    if (tempCalcRes.possible) {
+    this.calculationResult = {
+      ...this.calculationRawResult,
+      subInvestments: this.mapDataToDisplayData(
+        this.calculationRawResult.culminatedSubInvestments,
+      ),
+    }
+    if (this.calculationRawResult.possible) {
       console.log('calc panel: ', this.calcPanel)
       this.inputPanel.close()
       setTimeout(() => {
         this.calcPanel.open()
       }, 100)
-      this.calculationResult = {
-        ...tempCalcRes,
-        subInvestments: this.mapDataToDisplayData(tempCalcRes.subInvestments),
-      }
     }
+  }
+
+  confirmInvestment() {
+    this.invested = true
+    this.dataService
+      .commitInsurance(this.calculationRawResult)
+      .then(() => {
+        this.invested = false
+        this.calculationRawResult = null
+        this.calculationRawResult = null
+        this.calcPanel.close()
+      })
+      .catch(err => {
+        console.error(err)
+        this.invested = false
+        this.calculationRawResult = null
+        this.calculationRawResult = null
+        this.calcPanel.close()
+      })
   }
 
   ngOnInit() {}
 
-  loadData() {
-    this.rawInvestmentData = this.dataService.comulatedInvestments
+  async loadData() {
+    this.rawInvestmentData = await this.dataService.comulatedInvestments
     this.data = this.temp = this.mapDataToDisplayData(this.rawInvestmentData)
   }
 

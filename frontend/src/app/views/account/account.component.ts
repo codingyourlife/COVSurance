@@ -59,11 +59,15 @@ export class AccountComponent implements OnInit {
   ]
 
   constructor(private dataService: DataService) {
+    this.init().catch(err => console.error(err))
+  }
+
+  async init() {
     this.myInvestments = this.tempInvestments = this.mapInvestmentDataToDisplayData(
-      this.dataService.myInvestments,
+      await this.dataService.myInvestments,
     )
-    this.myInsurances = this.tempInsurances = this.mapInsuranceDataToDisplayData(
-      this.dataService.myInsurances,
+    this.myInsurances = this.tempInsurances = this.mapInvestmentDataToDisplayData(
+      await this.dataService.myInsurances,
     )
   }
 
@@ -102,13 +106,13 @@ export class AccountComponent implements OnInit {
       )
       .map((investment: CaluclatedInvestment) => {
         const timeFrame: string = `${
-          AccountComponent.months[investment.subInvestments[0].month]
-        } ${investment.subInvestments[0].year}`
-        const sum = investment.subInvestments
+          AccountComponent.months[investment.culminatedSubInvestments[0].month]
+        } ${investment.culminatedSubInvestments[0].year}`
+        const sum = investment.culminatedSubInvestments
           .map(invest => invest.sum)
           .reduce((prev, curr) => prev + curr)
         return {
-          risk: investment.subInvestments[0].risk,
+          risk: investment.culminatedSubInvestments[0].risk,
           bonus: `${(investment.averageBonusPercent * sum).toFixed(2)} €`,
           sum: sum.toLocaleString() + ' €',
           month: timeFrame,

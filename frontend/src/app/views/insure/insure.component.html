@@ -70,9 +70,6 @@
             *ngIf="calculating"
             [mode]="'indeterminate'"
           ></mat-progress-bar>
-          <mat-error *ngIf="calculationResult && !calculationResult.possible">
-            Berechnung nicht möglich, Volumen zu hoch.
-          </mat-error>
           <div class="text-muted">
             <p>
               Ich bestätige, dass ich ein Risiko im Zusammenhang mit einer
@@ -98,6 +95,12 @@
               </mat-error>
             </p>
           </div>
+          <mat-error
+            style="margin:auto;"
+            *ngIf="calculationResult && !calculationResult.possible"
+          >
+            Berechnung nicht möglich, Volumen zu hoch.
+          </mat-error>
           <mat-action-row fxLayoutAlign="center center" fxlayout="row">
             <button
               mat-raised-button
@@ -182,6 +185,13 @@
                 [columns]="columns"
               ></ngx-datatable>
             </div>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="confirmInvestment()"
+            >
+              Versicherung abschließen
+            </button>
           </div>
         </mat-expansion-panel>
 
