@@ -28,8 +28,9 @@ export class InvestComponent implements OnInit {
   investForm: FormGroup
   processing: boolean
 
-  readTerm: boolean
+  hasAccess: boolean
 
+  readTerm: boolean
   timeframes: { id: number; label: string }[] = []
 
   constructor(private dataServ: DataService, private snackbar: MatSnackBar) {
@@ -50,6 +51,13 @@ export class InvestComponent implements OnInit {
         } ${currentYear + Math.floor(i / InvestComponent.months.length)}`,
       })
     }
+    this.dataServ
+      .hasAccessToBlockchain()
+      .then(hasAccess => (this.hasAccess = hasAccess))
+      .catch(err => {
+        console.error(err)
+        this.hasAccess = false
+      })
   }
 
   invest() {

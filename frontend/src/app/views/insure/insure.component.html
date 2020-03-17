@@ -101,6 +101,21 @@
           >
             Berechnung nicht möglich, Volumen zu hoch.
           </mat-error>
+          <mat-error
+            style="margin:auto;"
+            *ngIf="calculationResult && !calculationResult.possible"
+          >
+            Generierung von Investment kann nicht gestartet werden, weil kein
+            Zugriff auf Kovan ETH Browserwallet möglich - passendes Add-On für
+            Firefox/Chrome verfügbar unter
+            <a
+              href="https://metamask.io"
+              target="_blank"
+              class="mat-color-accent"
+            >
+              https://metamask.io
+            </a>
+          </mat-error>
           <mat-action-row fxLayoutAlign="center center" fxlayout="row">
             <button
               mat-raised-button
@@ -194,6 +209,18 @@
             *ngIf="investmentInProcess"
             [mode]="'indeterminate'"
           ></mat-progress-bar>
+          <mat-error *ngIf="!hasAccess">
+            Generierung von Versicherung kann nicht gestartet werden, weil kein
+            Zugriff auf Kovan ETH Browserwallet möglich - passendes Add-On für
+            Firefox/Chrome verfügbar unter
+            <a
+              href="https://metamask.io"
+              target="_blank"
+              class="mat-color-accent"
+            >
+              https://metamask.io
+            </a>
+          </mat-error>
           <mat-action-row
             fxLayoutAlign="center center"
             fxlayout="row"
@@ -203,7 +230,7 @@
               mat-raised-button
               color="primary"
               (click)="confirmInvestment()"
-              [disabled]="investmentInProcess"
+              [disabled]="investmentInProcess || !hasAccess"
             >
               Versicherung abschließen
             </button>
@@ -254,6 +281,29 @@
           </div>
         </mat-expansion-panel>
       </mat-accordion>
+    </div>
+  </div>
+  <div
+    class="signup4-container mat-elevation-z4 card-width"
+    fxLayout="column"
+    fxLayoutAlign="center stretch"
+    [@animate]="{
+      value: '*',
+      params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+    }"
+    style="margin-bottom: 32px; margin-top: 24pxpx; background: white;"
+    *ngIf="!hasAccess"
+  >
+    <!-- Right side content -->
+    <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
+      <h3 class="mat-color-warn">
+        Bei dem derzeit angezeigten Versicherungsangebot handelt es sich um
+        Dummydaten, weil kein Zugriff auf Kovan ETH Browserwallet möglich -
+        passendes Add-On für Firefox/Chrome verfügbar unter
+        <a href="https://metamask.io" target="_blank" class="mat-color-accent">
+          https://metamask.io
+        </a>
+      </h3>
     </div>
   </div>
 </div>

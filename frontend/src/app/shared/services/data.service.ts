@@ -4,6 +4,7 @@ import { WEB3 } from './web3'
 import Web3 from 'web3'
 import { HttpClient } from '@angular/common/http'
 import { ContractsService, BlockChainInvestment } from './contracts.service'
+import { runInThisContext } from 'vm'
 
 export interface Investment {
   id: string
@@ -26,10 +27,84 @@ export interface CaluclatedInvestment {
   providedIn: 'root',
 })
 export class DataService {
-  private fakeInvestments: Investment[] = [
+  private cachedInvestments: Investment[] = []
+
+  private dummyData: Investment[] = [
     {
-      id: 'fake',
-      risk: 'LOCAL DEMO',
+      id: '0',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 4,
+      year: 2020,
+      sum: 10000,
+      bonus: 0.1,
+    },
+    {
+      id: '1',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 4,
+      year: 2020,
+      sum: 5000,
+      bonus: 0.1,
+    },
+    {
+      id: '2',
+      risk: 'CoV-Veranstaltungsausfall',
+      month: 4,
+      year: 2020,
+      sum: 2000,
+      bonus: 0.1,
+    },
+    {
+      id: '3',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 4,
+      year: 2020,
+      sum: 100000,
+      bonus: 0.1,
+    },
+    {
+      id: '4',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 4,
+      year: 2020,
+      sum: 50000,
+      bonus: 0.12,
+    },
+    {
+      id: '5',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 5,
+      year: 2020,
+      sum: 70000,
+      bonus: 0.09,
+    },
+    {
+      id: '6',
+      risk: 'CoV-Veranstaltungsausfall',
+      month: 5,
+      year: 2020,
+      sum: 5500,
+      bonus: 0.09,
+    },
+    {
+      id: '7',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 5,
+      year: 2020,
+      sum: 90000,
+      bonus: 0.12,
+    },
+    {
+      id: '8',
+      risk: 'CoV-Betriebsunterbrechung',
+      month: 6,
+      year: 2020,
+      sum: 210000,
+      bonus: 0.18,
+    },
+    {
+      id: '9',
+      risk: 'CoV-Veranstaltungsausfall',
       month: 6,
       year: 2020,
       sum: 210000,
@@ -44,19 +119,28 @@ export class DataService {
   private _myInsurances: Investment[] = []
   private lastMyInsurancesPull = 0
 
+  private contractsUnavailable: boolean
+
   constructor(private contracts: ContractsService) {
     this.init().catch(err => console.error(err))
+  }
+
+  async hasAccessToBlockchain(): Promise<boolean> {
+    await this.contracts.ready
+    return this.contracts.hasEtheriumAccess()
   }
 
   async init() {
     this.contracts.ready
       .then(ready => {
         if (ready) {
-          this.contracts.getMyInvestments().catch(err => console.error(err))
           return this.contracts.getInsuranceData()
         }
       })
       .then(insuranceData => {
+        if (!insuranceData) {
+          this.contractsUnavailable = true
+        }
         console.log('insuranceData: ', insuranceData)
       })
   }
@@ -67,7 +151,7 @@ export class DataService {
       investments,
       rawInvestments,
     ] = await this.contracts.getInsuranceData()
-    this.fakeInvestments = investments.filter(invest => invest.sum > 0)
+    this.cachedInvestments = investments.filter(invest => invest.sum > 0)
     this.lastInsurancePull = Date.now()
   }
 
@@ -86,13 +170,19 @@ export class DataService {
   }
 
   private get investments(): Promise<Investment[]> {
-    if (this.lastInsurancePull < Date.now() - 10000) {
-      return this.fetchBlockchainData().then(() => [...this.fakeInvestments])
+    if (this.contractsUnavailable) {
+      return Promise.resolve([...this.dummyData])
     }
-    return Promise.resolve([...this.fakeInvestments])
+    if (this.lastInsurancePull < Date.now() - 10000) {
+      return this.fetchBlockchainData().then(() => [...this.cachedInvestments])
+    }
+    return Promise.resolve([...this.cachedInvestments])
   }
 
   public get myInvestments(): Promise<Investment[]> {
+    if (this.contractsUnavailable) {
+      return Promise.resolve([])
+    }
     if (this.lastMyInvestmentsPull < Date.now() - 10000) {
       return this.fetchMyInvestments().then(() => [...this._myInvestments])
     }
@@ -100,6 +190,9 @@ export class DataService {
   }
 
   public get myInsurances(): Promise<Investment[]> {
+    if (this.contractsUnavailable) {
+      return Promise.resolve([])
+    }
     if (this.lastMyInsurancesPull < Date.now() - 10000) {
       return this.fetchMyInsurances().then(() => [...this._myInsurances])
     }

@@ -128,11 +128,23 @@
           [mode]="'indeterminate'"
           *ngIf="processing"
         ></mat-progress-bar>
+        <mat-error *ngIf="!hasAccess">
+          Generierung von Investment kann nicht gestartet werden, weil kein
+          Zugriff auf Kovan ETH Browserwallet möglich - passendes Add-On für
+          Firefox/Chrome verfügbar unter
+          <a
+            href="https://metamask.io"
+            target="_blank"
+            class="mat-color-accent"
+          >
+            https://metamask.io
+          </a>
+        </mat-error>
       </div>
       <button
         mat-raised-button
         color="primary"
-        [disabled]="!readTerm || investForm.invalid || processing"
+        [disabled]="!readTerm || investForm.invalid || processing || !hasAccess"
         (click)="invest()"
       >
         INVESTIEREN

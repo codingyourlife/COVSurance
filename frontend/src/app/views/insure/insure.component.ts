@@ -97,12 +97,21 @@ export class InsureComponent implements OnInit {
 
   invested: boolean
 
+  hasAccess: boolean
+
   constructor(private dataService: DataService) {
     this.insuranceForm = new FormGroup({
       risk: new FormControl('', Validators.required),
       timeframe: new FormControl('', Validators.required),
       volume: new FormControl(0, Validators.min(50)),
     })
+    this.dataService
+      .hasAccessToBlockchain()
+      .then(hasAccess => (this.hasAccess = hasAccess))
+      .catch(err => {
+        console.error(err)
+        this.hasAccess = false
+      })
   }
 
   async calculateInvestment() {

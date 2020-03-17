@@ -77,16 +77,32 @@ export class AccountComponent implements OnInit {
     },
   ]
 
+  hasAccess: boolean
+
+  loadingInvestments: boolean
+  loadingInsurances: boolean
+
   constructor(private dataService: DataService) {
     this.init().catch(err => console.error(err))
+    this.dataService
+      .hasAccessToBlockchain()
+      .then(hasAccess => (this.hasAccess = hasAccess))
+      .catch(err => {
+        console.error(err)
+        this.hasAccess = false
+      })
   }
 
   async init() {
+    this.loadingInvestments = true
     this.myInvestments = this.tempInvestments = this.mapInvestmentDataToDisplayData(
       await this.dataService.myInvestments,
+      'investment',
     )
+    this.loadingInsurances = true
     this.myInsurances = this.tempInsurances = this.mapInvestmentDataToDisplayData(
       await this.dataService.myInsurances,
+      'insurance',
     )
   }
 
@@ -94,7 +110,13 @@ export class AccountComponent implements OnInit {
 
   private mapInvestmentDataToDisplayData(
     data: Investment[],
+    type: 'investment' | 'insurance',
   ): ComulatedInvestmentDisplay[] {
+    if (type === 'investment') {
+      this.loadingInvestments = false
+    } else {
+      this.loadingInsurances = false
+    }
     return data
       .sort(
         (investment1: Investment, investment2: Investment) =>

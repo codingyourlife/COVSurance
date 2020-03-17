@@ -33,7 +33,7 @@
             [limit]="8"
             [rows]="myInvestments"
             [columns]="investColumns"
-            [loadingIndicator]="myInvestments.length === 0"
+            [loadingIndicator]="loadingInvestments"
           ></ngx-datatable>
         </div>
       </div>
@@ -72,10 +72,34 @@
             [limit]="8"
             [rows]="myInsurances"
             [columns]="insureColumns"
-            [loadingIndicator]="myInsurances.length === 0"
+            [loadingIndicator]="loadingInsurances"
           ></ngx-datatable>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div
+    class="signup4-container mat-elevation-z4 card-width"
+    fxLayout="column"
+    fxLayoutAlign="center stretch"
+    [@animate]="{
+      value: '*',
+      params: { y: '120px', opacity: '0', delay: '100ms', duration: '400ms' }
+    }"
+    style="margin-bottom: 32px; margin-top: 24pxpx; background: white;"
+    *ngIf="!hasAccess"
+  >
+    <!-- Right side content -->
+    <div style="padding:16px;" fxLayout="column" fxLayoutAlign="center center">
+      <h3 class="mat-color-warn">
+        Kontostand kann nicht angezeigt werden, weil kein Zugriff auf Kovan ETH
+        Browserwallet möglich - passendes Add-On für Firefox/Chrome verfügbar
+        unter
+        <a href="https://metamask.io" target="_blank" class="mat-color-accent">
+          https://metamask.io
+        </a>
+      </h3>
     </div>
   </div>
 </div>
