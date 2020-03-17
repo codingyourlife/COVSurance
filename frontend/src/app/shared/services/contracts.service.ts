@@ -326,7 +326,7 @@ export class ContractsService {
     })
   }
 
-  private async testStuff() {}
+  private async testStuff() { }
 
   private getContracts() {
     this.investContract = new this.web3.eth.Contract(
@@ -447,7 +447,7 @@ export class ContractsService {
   async commitBlockChainInvestment(data: BlockChainInvestment) {
     const tokenNameInvest = `${data.risk} investor ${data.bonus * 100}%`
     const tokenNameInsuree = `${data.risk} insuree ${data.bonus * 100}%`
-    const rateInPercent = this.web3.utils.toWei(data.bonus + '', 'ether')
+    const rateInPercent = (data.bonus * 100).toString(); //not 1e18 or comma!
 
     const [insurances, rawInsurances] = await this.getInsuranceData()
     const insIndex = rawInsurances.findIndex(
