@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core'
 import { WEB3 } from './web3'
 import Web3 from 'web3'
 import { HttpClient } from '@angular/common/http'
-import { Investment, DataService } from './data.service'
+import { Investment } from './data.service'
 
 interface Locator {
   MoneyVaultFactory: string

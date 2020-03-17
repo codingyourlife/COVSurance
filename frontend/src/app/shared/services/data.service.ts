@@ -1,10 +1,6 @@
-import { Injectable, Inject } from '@angular/core'
+import { Injectable } from '@angular/core'
 import { Moment } from 'moment'
-import { WEB3 } from './web3'
-import Web3 from 'web3'
-import { HttpClient } from '@angular/common/http'
 import { ContractsService, BlockChainInvestment } from './contracts.service'
-import { runInThisContext } from 'vm'
 
 export interface Investment {
   id: string
