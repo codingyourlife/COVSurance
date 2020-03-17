@@ -129,6 +129,8 @@ contract MoneyVault is
     }
 
     function insureeDeposits() external payable {
+        uint256 iLoveRomi = (uint256(100).mul(1e18)).div(_rateInPercent); //20% -> 5bc
+
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
@@ -139,17 +141,18 @@ contract MoneyVault is
         require(address(_insureeCoin) != address(0), "no insureeCoin");
 
         require(
-            _totalInvestorDeposits >= _totalInsureeDeposits.add(msg.value),
+            _totalInvestorDeposits >=
+                wmul(_totalInsureeDeposits.add(msg.value), iLoveRomi),
             "investor amount too low"
         );
+
+        uint256 bcRateInPercent = (uint256(_rateInPercent).mul(1e18)) / 100; //20% -> 0.2bc
 
         _insureeDeposits[msg.sender] = _insureeDeposits[msg.sender].add(
             msg.value
         );
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
-
-        uint256 bcRateInPercent = (uint256(_rateInPercent).mul(1e18)) / 100; //0.2bc
 
         _insureeCoin.mint(
             msg.sender,
