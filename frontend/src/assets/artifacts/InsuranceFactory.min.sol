@@ -1,6 +1,7 @@
+
 // File: @openzeppelin/contracts/math/SafeMath.sol
 
-pragma solidity ^0.5.5;
+pragma solidity ^0.5.0;
 
 /**
  * @dev Wrappers over Solidity's arithmetic operations with added overflow
@@ -56,11 +57,7 @@ library SafeMath {
      *
      * _Available since v2.4.0._
      */
-    function sub(uint256 a, uint256 b, string memory errorMessage)
-        internal
-        pure
-        returns (uint256)
-    {
+    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         require(b <= a, errorMessage);
         uint256 c = a - b;
 
@@ -118,11 +115,7 @@ library SafeMath {
      *
      * _Available since v2.4.0._
      */
-    function div(uint256 a, uint256 b, string memory errorMessage)
-        internal
-        pure
-        returns (uint256)
-    {
+    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         // Solidity only automatically asserts when dividing by 0
         require(b > 0, errorMessage);
         uint256 c = a / b;
@@ -159,17 +152,15 @@ library SafeMath {
      *
      * _Available since v2.4.0._
      */
-    function mod(uint256 a, uint256 b, string memory errorMessage)
-        internal
-        pure
-        returns (uint256)
-    {
+    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         require(b != 0, errorMessage);
         return a % b;
     }
 }
 
 // File: @openzeppelin/contracts/GSN/Context.sol
+
+pragma solidity ^0.5.0;
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -184,7 +175,7 @@ library SafeMath {
 contract Context {
     // Empty internal constructor, to prevent people from mistakenly deploying
     // an instance of this contract, which should be used via inheritance.
-    constructor() internal {}
+    constructor () internal { }
     // solhint-disable-previous-line no-empty-blocks
 
     function _msgSender() internal view returns (address payable) {
@@ -199,6 +190,8 @@ contract Context {
 
 // File: @openzeppelin/contracts/ownership/Secondary.sol
 
+pragma solidity ^0.5.0;
+
 /**
  * @dev A Secondary contract can only be used by its primary account (the one that created it).
  */
@@ -208,12 +201,14 @@ contract Secondary is Context {
     /**
      * @dev Emitted when the primary contract changes.
      */
-    event PrimaryTransferred(address recipient);
+    event PrimaryTransferred(
+        address recipient
+    );
 
     /**
      * @dev Sets the primary account to the one that is creating the Secondary contract.
      */
-    constructor() internal {
+    constructor () internal {
         address msgSender = _msgSender();
         _primary = msgSender;
         emit PrimaryTransferred(msgSender);
@@ -223,10 +218,7 @@ contract Secondary is Context {
      * @dev Reverts if called from any account other than the primary.
      */
     modifier onlyPrimary() {
-        require(
-            _msgSender() == _primary,
-            "Secondary: caller is not the primary account"
-        );
+        require(_msgSender() == _primary, "Secondary: caller is not the primary account");
         _;
     }
 
@@ -242,16 +234,15 @@ contract Secondary is Context {
      * @param recipient The address of new primary.
      */
     function transferPrimary(address recipient) public onlyPrimary {
-        require(
-            recipient != address(0),
-            "Secondary: new primary is the zero address"
-        );
+        require(recipient != address(0), "Secondary: new primary is the zero address");
         _primary = recipient;
         emit PrimaryTransferred(recipient);
     }
 }
 
 // File: @openzeppelin/contracts/utils/Address.sol
+
+pragma solidity ^0.5.5;
 
 /**
  * @dev Collection of functions related to the address type
@@ -281,9 +272,7 @@ library Address {
         bytes32 codehash;
         bytes32 accountHash = 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470;
         // solhint-disable-next-line no-inline-assembly
-        assembly {
-            codehash := extcodehash(account)
-        }
+        assembly { codehash := extcodehash(account) }
         return (codehash != accountHash && codehash != 0x0);
     }
 
@@ -293,11 +282,7 @@ library Address {
      *
      * _Available since v2.4.0._
      */
-    function toPayable(address account)
-        internal
-        pure
-        returns (address payable)
-    {
+    function toPayable(address account) internal pure returns (address payable) {
         return address(uint160(account));
     }
 
@@ -320,21 +305,17 @@ library Address {
      * _Available since v2.4.0._
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        require(
-            address(this).balance >= amount,
-            "Address: insufficient balance"
-        );
+        require(address(this).balance >= amount, "Address: insufficient balance");
 
         // solhint-disable-next-line avoid-call-value
         (bool success, ) = recipient.call.value(amount)("");
-        require(
-            success,
-            "Address: unable to send value, recipient may have reverted"
-        );
+        require(success, "Address: unable to send value, recipient may have reverted");
     }
 }
 
 // File: contracts/MoneyVault/Interfaces/IMoneyVaultInvestor.sol
+
+pragma solidity ^0.5.5;
 
 interface IMoneyVaultInvestor {
     function depositsOfInvestor(address payee) external view returns (uint256);
@@ -346,21 +327,126 @@ interface IMoneyVaultInvestor {
 
 // File: contracts/MoneyVault/Interfaces/ITransferablePrimary.sol
 
+pragma solidity ^0.5.5;
+
 interface ITransferablePrimary {
     function transferPrimary(address recipient) external;
 }
 
 // File: contracts/Coins/Interfaces/IMintable.sol
 
+pragma solidity ^0.5.5;
+
 interface IMintable {
     function mint(address account, uint256 amount) external returns (bool);
     function addMinter(address account) external;
 }
 
+// File: contracts/MoneyVault/Libraries/DSMath.sol
+
+/// math.sol -- mixin for inline numerical wizardry
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+pragma solidity ^0.5.5;
+
+contract DSMath {
+    function add(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        require((z = x + y) >= x, "ds-math-add-overflow");
+    }
+    function sub(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        require((z = x - y) <= x, "ds-math-sub-underflow");
+    }
+    function mul(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        require(y == 0 || (z = x * y) / y == x, "ds-math-mul-overflow");
+    }
+
+    function min(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        return x <= y ? x : y;
+    }
+    function max(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        return x >= y ? x : y;
+    }
+    function imin(int256 x, int256 y) internal pure returns (int256 z) {
+        return x <= y ? x : y;
+    }
+    function imax(int256 x, int256 y) internal pure returns (int256 z) {
+        return x >= y ? x : y;
+    }
+
+    uint256 constant WAD = 10**18;
+    uint256 constant RAY = 10**27;
+
+    function wmul(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        z = add(mul(x, y), WAD / 2) / WAD;
+    }
+    function rmul(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        z = add(mul(x, y), RAY / 2) / RAY;
+    }
+    function wdiv(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        z = add(mul(x, WAD), y / 2) / y;
+    }
+    function rdiv(uint256 x, uint256 y) internal pure returns (uint256 z) {
+        z = add(mul(x, RAY), y / 2) / y;
+    }
+
+    // This famous algorithm is called "exponentiation by squaring"
+    // and calculates x^n with x as fixed-point and n as regular unsigned.
+    //
+    // It's O(log n), instead of O(n) for naive repeated multiplication.
+    //
+    // These facts are why it works:
+    //
+    //  If n is even, then x^n = (x^2)^(n/2).
+    //  If n is odd,  then x^n = x * x^(n-1),
+    //   and applying the equation for even x gives
+    //    x^n = x * (x^2)^((n-1) / 2).
+    //
+    //  Also, EVM division is flooring and
+    //    floor[(n-1) / 2] = floor[n / 2].
+    //
+    function rpow(uint256 x, uint256 n) internal pure returns (uint256 z) {
+        z = n % 2 != 0 ? x : RAY;
+
+        for (n /= 2; n != 0; n /= 2) {
+            x = rmul(x, x);
+
+            if (n % 2 != 0) {
+                z = rmul(z, x);
+            }
+        }
+    }
+}
+
 // File: contracts/MoneyVault/MoneyVault.sol
 
+pragma solidity ^0.5.5;
+
+
+
+
+
+
+
+
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
-contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
+contract MoneyVault is
+    IMoneyVaultInvestor,
+    ITransferablePrimary,
+    Secondary,
+    DSMath
+{
     using SafeMath for uint256;
     using Address for address;
 
@@ -475,6 +561,8 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
     }
 
     function insureeDeposits() external payable {
+        uint256 iLoveRomi = (uint256(100).mul(1e18)).div(_rateInPercent); //20% -> 5bc
+
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
@@ -485,9 +573,12 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
         require(address(_insureeCoin) != address(0), "no insureeCoin");
 
         require(
-            _totalInvestorDeposits >= _totalInsureeDeposits.add(msg.value),
+            _totalInvestorDeposits >=
+                wmul(_totalInsureeDeposits.add(msg.value), iLoveRomi),
             "investor amount too low"
         );
+
+        uint256 bcRateInPercent = (uint256(_rateInPercent).mul(1e18)) / 100; //20% -> 0.2bc
 
         _insureeDeposits[msg.sender] = _insureeDeposits[msg.sender].add(
             msg.value
@@ -495,7 +586,10 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        _insureeCoin.mint(msg.sender, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
+        _insureeCoin.mint(
+            msg.sender,
+            wdiv(msg.value, bcRateInPercent).mul(1000)
+        ); //TODO: mul1000 is just for testnet
 
         emit DepositedByInsuree(msg.sender, msg.value);
 
@@ -587,6 +681,8 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
 
 // File: contracts/Factory/Interfaces/IMoneyVaultFactory.sol
 
+pragma solidity ^0.5.5;
+
 interface IMoneyVaultFactory {
     function createMoneyVault(
         uint256 insurancePeriodStart,
@@ -600,6 +696,10 @@ interface IMoneyVaultFactory {
 }
 
 // File: contracts/Factory/MoneyVaultFactory.sol
+
+pragma solidity ^0.5.5;
+
+
 
 contract MoneyVaultFactory is IMoneyVaultFactory {
     event MoneyVaultCreated(address indexed sender, MoneyVault vault);
@@ -633,6 +733,8 @@ contract MoneyVaultFactory is IMoneyVaultFactory {
 
 // File: contracts/Factory/Interfaces/ITokenFactory.sol
 
+pragma solidity ^0.5.5;
+
 interface ITokenFactory {
     function createCoins(
         string calldata tokenNameInvestorCoin,
@@ -641,6 +743,8 @@ interface ITokenFactory {
 }
 
 // File: contracts/Factory/Interfaces/IInsuranceFactory.sol
+
+pragma solidity ^0.5.5;
 
 interface IInsuranceFactory {
     function createInsuranceFor(
@@ -656,11 +760,20 @@ interface IInsuranceFactory {
 
 // File: contracts/Coins/Interfaces/ITransferableOwnership.sol
 
+pragma solidity ^0.5.5;
+
 interface ITransferableOwnership {
     function transferOwnership(address newOwner) external;
 }
 
 // File: contracts/Factory/InsuranceFactory.sol
+
+pragma solidity ^0.5.5;
+
+
+
+
+
 
 contract InsuranceFactory is IInsuranceFactory {
     IMoneyVaultFactory _moneyVaultFactory;
