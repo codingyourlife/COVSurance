@@ -50,7 +50,7 @@ export class LayoutService {
         dir: 'ltr', // ltr, rtl
         useBreadcrumb: true,
         topbarFixed: false,
-        footerFixed: false,
+        footerFixed: true,
         topbarColor: 'red', // http://demos.ui-lib.com/egret-doc/#egret-colors
         footerColor: 'white', // http://demos.ui-lib.com/egret-doc/#egret-colors
         matTheme: 'egret-navy', // egret-blue, egret-navy, egret-light-purple, egret-dark-purple, egret-dark-pink
