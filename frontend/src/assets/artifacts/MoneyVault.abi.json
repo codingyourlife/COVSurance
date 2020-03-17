@@ -1,210 +1,60 @@
 [
   {
+    "constant": true,
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "insurancePeriodStart",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "insurancePeriodEnd",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "signaturePeriodStart",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "signaturePeriodEnd",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "investorCoin",
+        "name": "payee",
         "type": "address"
-      },
+      }
+    ],
+    "name": "depositsOfInvestor",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "insureeCoin",
-        "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "rateInPercent",
-        "type": "uint8"
+        "name": "",
+        "type": "uint256"
       }
     ],
     "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "insuredCaseHappened",
+        "type": "bool"
+      }
+    ],
+    "name": "closeCase",
+    "outputs": [],
+    "payable": false,
     "stateMutability": "nonpayable",
-    "type": "constructor"
+    "type": "function"
   },
   {
-    "anonymous": false,
-    "inputs": [
+    "constant": true,
+    "inputs": [],
+    "name": "getTotalDeposits",
+    "outputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "DepositedByInsuree",
-    "type": "event"
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    "anonymous": false,
+    "constant": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "DepositedByInvestor",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
         "name": "recipient",
         "type": "address"
       }
     ],
-    "name": "PrimaryTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "StateChangedToActive",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "StateChangedToActiveInsureeBenefits",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "StateChangedToActiveInvestorBenefits",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "StateChangedToInsureeFound",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "StateChangedToInvestorFound",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "StateChangedToNoInsureeFound",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "WithdrawnByInvestor",
-    "type": "event"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "claimAsInsuree",
+    "name": "transferPrimary",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -220,69 +70,11 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "insuredCaseHappened",
-        "type": "bool"
-      }
-    ],
-    "name": "closeCase",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      }
-    ],
-    "name": "depositsOfInsuree",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "payee",
-        "type": "address"
-      }
-    ],
-    "name": "depositsOfInvestor",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": true,
     "inputs": [],
     "name": "getCurrentState",
     "outputs": [
       {
-        "internalType": "enum MoneyVault.MoneyVaultState",
         "name": "",
         "type": "uint8"
       }
@@ -292,33 +84,21 @@
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [],
-    "name": "getTotalDeposits",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "name": "setNoInsureeFound",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [],
-    "name": "getTotalInsureeDeposits",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "name": "claimAsInsuree",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -327,7 +107,71 @@
     "name": "getTotalInvestorDeposits",
     "outputs": [
       {
-        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "setActive",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "getTotalInsureeDeposits",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "primary",
+    "outputs": [
+      {
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "investorDeposits",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "payee",
+        "type": "address"
+      }
+    ],
+    "name": "depositsOfInsuree",
+    "outputs": [
+      {
         "name": "",
         "type": "uint256"
       }
@@ -346,60 +190,183 @@
     "type": "function"
   },
   {
-    "constant": false,
-    "inputs": [],
-    "name": "investorDeposits",
-    "outputs": [],
-    "payable": true,
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "primary",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "address",
-        "name": "",
+        "name": "insurancePeriodStart",
+        "type": "uint256"
+      },
+      {
+        "name": "insurancePeriodEnd",
+        "type": "uint256"
+      },
+      {
+        "name": "signaturePeriodStart",
+        "type": "uint256"
+      },
+      {
+        "name": "signaturePeriodEnd",
+        "type": "uint256"
+      },
+      {
+        "name": "investorCoin",
         "type": "address"
+      },
+      {
+        "name": "insureeCoin",
+        "type": "address"
+      },
+      {
+        "name": "rateInPercent",
+        "type": "uint8"
       }
     ],
     "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "setActive",
-    "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
-    "type": "function"
+    "type": "constructor"
   },
   {
-    "constant": false,
-    "inputs": [],
-    "name": "setNoInsureeFound",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
+    "anonymous": false,
     "inputs": [
       {
-        "internalType": "address",
+        "indexed": true,
+        "name": "payee",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "DepositedByInvestor",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "payee",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "DepositedByInsuree",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "payee",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "WithdrawnByInvestor",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "payee",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "StateChangedToInvestorFound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "payee",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "StateChangedToInsureeFound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "StateChangedToActive",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "StateChangedToActiveInsureeBenefits",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "StateChangedToActiveInvestorBenefits",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "StateChangedToNoInsureeFound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "name": "recipient",
         "type": "address"
       }
     ],
-    "name": "transferPrimary",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "name": "PrimaryTransferred",
+    "type": "event"
   }
 ]

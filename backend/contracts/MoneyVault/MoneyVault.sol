@@ -6,9 +6,15 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "./Interfaces/IMoneyVaultInvestor.sol";
 import "./Interfaces/ITransferablePrimary.sol";
 import "../Coins/Interfaces/IMintable.sol";
+import "./Libraries/DSMath.sol";
 
 // based on: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.0/contracts/payment/escrow/Escrow.sol
-contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
+contract MoneyVault is
+    IMoneyVaultInvestor,
+    ITransferablePrimary,
+    Secondary,
+    DSMath
+{
     using SafeMath for uint256;
     using Address for address;
 
@@ -123,6 +129,8 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
     }
 
     function insureeDeposits() external payable {
+        uint256 iLoveRomi = (uint256(100).mul(1e18)).div(_rateInPercent); //20% -> 5bc
+
         require(
             currentState == MoneyVaultState.InvestorFound ||
                 currentState == MoneyVaultState.InsureeFound,
@@ -133,9 +141,12 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
         require(address(_insureeCoin) != address(0), "no insureeCoin");
 
         require(
-            _totalInvestorDeposits >= _totalInsureeDeposits.add(msg.value),
+            _totalInvestorDeposits >=
+                wmul(_totalInsureeDeposits.add(msg.value), iLoveRomi),
             "investor amount too low"
         );
+
+        uint256 bcRateInPercent = (uint256(_rateInPercent).mul(1e18)) / 100; //20% -> 0.2bc
 
         _insureeDeposits[msg.sender] = _insureeDeposits[msg.sender].add(
             msg.value
@@ -143,7 +154,10 @@ contract MoneyVault is IMoneyVaultInvestor, ITransferablePrimary, Secondary {
         _totalInsureeDeposits = _totalInsureeDeposits.add(msg.value);
         _totalDeposits = _totalDeposits.add(msg.value);
 
-        _insureeCoin.mint(msg.sender, msg.value.div(_rateInPercent).mul(1000)); //TODO: mul1000 is just for testnet
+        _insureeCoin.mint(
+            msg.sender,
+            wdiv(msg.value, bcRateInPercent).mul(1000)
+        ); //TODO: mul1000 is just for testnet
 
         emit DepositedByInsuree(msg.sender, msg.value);
 

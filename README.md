@@ -38,8 +38,6 @@ flatten into artifacts folder via
 npm run-script flatten
 ```
 
-manually remove all pragma lines except the first one.
-
 open it via https://remix.ethereum.org/#optimize=true&evmVersion=null&version=soljson-v0.5.0+commit.1d4f565a.js
 
 1. Deploy MoneyVaultFactory (and save addreses to Locator.json)

@@ -17,7 +17,8 @@ const InsureeCoin = contract.fromArtifact("InsureeCoin");
 describe("MoneyVault", function() {
   const [controller, investor1, insuree1] = accounts;
 
-  const amount = ether("1");
+  const amountInvestor = ether("1");
+  const amountInsuree = ether("0.1");
 
   context("once deployed", function() {
     beforeEach(async function() {
@@ -50,13 +51,15 @@ describe("MoneyVault", function() {
       it("investorDeposits and investment is parked like in an escrow", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         const depositOfInvestor = await this.moneyVault.depositsOfInvestor(
           investor1
         );
 
-        expect(depositOfInvestor.toString()).to.equal(amount.toString());
+        expect(depositOfInvestor.toString()).to.equal(
+          amountInvestor.toString()
+        );
       });
 
       it("investorDeposits too early", async function() {
@@ -83,7 +86,7 @@ describe("MoneyVault", function() {
         await expectRevert(
           tmpMoneyVault.investorDeposits({
             from: investor1,
-            value: amount
+            value: amountInvestor
           }),
           "too early"
         );
@@ -113,7 +116,7 @@ describe("MoneyVault", function() {
         await expectRevert(
           tmpMoneyVault.investorDeposits({
             from: investor1,
-            value: amount
+            value: amountInvestor
           }),
           "too late"
         );
@@ -123,18 +126,18 @@ describe("MoneyVault", function() {
         //investorDeposits required
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
 
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         const depositOfInsuree = await this.moneyVault.depositsOfInsuree(
           insuree1
         );
 
-        expect(depositOfInsuree.toString()).to.equal(amount.toString());
+        expect(depositOfInsuree.toString()).to.equal(amountInsuree.toString());
       });
 
       it("insureeDeposits too early (fails because not even in state)", async function() {
@@ -161,7 +164,7 @@ describe("MoneyVault", function() {
         await expectRevert(
           tmpMoneyVault.investorDeposits({
             from: investor1,
-            value: amount
+            value: amountInvestor
           }),
           "too early"
         );
@@ -169,7 +172,7 @@ describe("MoneyVault", function() {
         await expectRevert(
           tmpMoneyVault.insureeDeposits({
             from: insuree1,
-            value: amount
+            value: amountInsuree
           }),
           "wrong state for investment."
         );
@@ -178,20 +181,32 @@ describe("MoneyVault", function() {
       it("totalInvestorDeposits and totalInsureeDeposits", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: "20"
+          value: ether("1")
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: "10"
+          value: ether("0.05")
+        });
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
+          value: ether("0.025")
+        });
+        await this.moneyVault.insureeDeposits({
+          from: insuree1,
+          value: ether("0.025")
         });
 
         const totalInvestorDeposits = await this.moneyVault.getTotalInvestorDeposits();
         const totalInsureeDeposits = await this.moneyVault.getTotalInsureeDeposits();
         const totalDeposits = await this.moneyVault.getTotalDeposits();
 
-        expect(totalInvestorDeposits.toString()).to.equal("20");
-        expect(totalInsureeDeposits.toString()).to.equal("10");
-        expect(totalDeposits.toString()).to.equal("30");
+        expect(totalInvestorDeposits.toString()).to.equal(
+          ether("1").toString()
+        );
+        expect(totalInsureeDeposits.toString()).to.equal(
+          ether("0.1").toString()
+        );
+        expect(totalDeposits.toString()).to.equal(ether("1.1").toString());
       });
     });
 
@@ -205,7 +220,7 @@ describe("MoneyVault", function() {
         await expectRevert(
           this.moneyVault.insureeDeposits({
             from: insuree1,
-            value: amount
+            value: amountInsuree
           }),
           "investor amount too low"
         );
@@ -222,7 +237,7 @@ describe("MoneyVault", function() {
       it("first investor investment changes state to MoneyVaultState.InvestorFound", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
 
         const currentState = await this.moneyVault.getCurrentState();
@@ -232,11 +247,11 @@ describe("MoneyVault", function() {
       it("first insuree investment changes state to MoneyVaultState.InsureeFound", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
 
         const currentState = await this.moneyVault.getCurrentState();
@@ -246,11 +261,11 @@ describe("MoneyVault", function() {
       it("setActive as intended", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await this.moneyVault.setActive();
 
@@ -284,11 +299,11 @@ describe("MoneyVault", function() {
 
         await tmpMoneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await tmpMoneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await expectRevert(tmpMoneyVault.setActive(), "too early");
       });
@@ -296,11 +311,11 @@ describe("MoneyVault", function() {
       it("closeCase(insuredCaseHappened=true) as intended", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
@@ -312,11 +327,11 @@ describe("MoneyVault", function() {
       it("closeCase(insuredCaseHappened=false) as intended", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
@@ -328,7 +343,7 @@ describe("MoneyVault", function() {
       it("setNoInsureeFound as intended", async function() {
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.setNoInsureeFound();
 
@@ -342,13 +357,13 @@ describe("MoneyVault", function() {
         const balanceTracker = await balance.tracker(investor1);
 
         await this.moneyVault.investorDeposits({
-          value: amount,
+          value: amountInvestor,
           from: investor1,
           gasPrice: 0
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
@@ -365,11 +380,11 @@ describe("MoneyVault", function() {
 
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(true);
@@ -385,11 +400,11 @@ describe("MoneyVault", function() {
 
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount,
+          value: amountInsuree,
           gasPrice: 0
         });
         await this.moneyVault.setActive();
@@ -407,11 +422,11 @@ describe("MoneyVault", function() {
 
         await this.moneyVault.investorDeposits({
           from: investor1,
-          value: amount
+          value: amountInvestor
         });
         await this.moneyVault.insureeDeposits({
           from: insuree1,
-          value: amount
+          value: amountInsuree
         });
         await this.moneyVault.setActive();
         await this.moneyVault.closeCase(false);
