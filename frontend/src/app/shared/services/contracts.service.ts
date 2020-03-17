@@ -106,6 +106,10 @@ export class ContractsService {
     })
   }
 
+  hasEtheriumAccess(): boolean {
+    return !!this.myAcc
+  }
+
   private getFiles() {
     return Promise.all([
       this.http
@@ -365,6 +369,9 @@ export class ContractsService {
   }
 
   private async init() {
+    if (typeof this.web3.currentProvider['enable'] === 'function') {
+      await this.web3.currentProvider['enable']()
+    }
     await Promise.all([
       this.web3.eth.getAccounts().then(accounts => (this.myAcc = accounts[0])),
       this.getFiles(),

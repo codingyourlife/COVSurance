@@ -36,7 +36,7 @@ export class InvestComponent implements OnInit {
     this.investForm = new FormGroup({
       risk: new FormControl('', Validators.required),
       volume: new FormControl(0, Validators.min(50)),
-      bonus: new FormControl(0, Validators.required),
+      bonus: new FormControl(0, Validators.min(1)),
       timeframe: new FormControl('', Validators.required),
       validUntil: new FormControl('', Validators.required),
     })
