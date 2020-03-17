@@ -189,6 +189,11 @@
               ></ngx-datatable>
             </div>
           </div>
+          <mat-progress-bar
+            style="width: 100%;"
+            *ngIf="investmentInProcess"
+            [mode]="'indeterminate'"
+          ></mat-progress-bar>
           <mat-action-row
             fxLayoutAlign="center center"
             fxlayout="row"
@@ -198,10 +203,16 @@
               mat-raised-button
               color="primary"
               (click)="confirmInvestment()"
+              [disabled]="investmentInProcess"
             >
               Versicherung abschließen
             </button>
-            <button mat-raised-button color="warn" (click)="cancelInvestment()">
+            <button
+              mat-raised-button
+              color="warn"
+              (click)="cancelInvestment()"
+              [disabled]="investmentInProcess"
+            >
               abbrechen
             </button>
           </mat-action-row>

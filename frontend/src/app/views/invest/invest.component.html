@@ -124,11 +124,15 @@
         </p>
 
         <mat-checkbox [(ngModel)]="readTerm">gelesen</mat-checkbox>
+        <mat-progress-bar
+          [mode]="'indeterminate'"
+          *ngIf="processing"
+        ></mat-progress-bar>
       </div>
       <button
         mat-raised-button
         color="primary"
-        [disabled]="!readTerm || investForm.invalid"
+        [disabled]="!readTerm || investForm.invalid || processing"
         (click)="invest()"
       >
         INVESTIEREN

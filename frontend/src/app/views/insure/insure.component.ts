@@ -90,6 +90,7 @@ export class InsureComponent implements OnInit {
 
   insuranceForm: FormGroup
   calculating: boolean
+  investmentInProcess: boolean
 
   calculationResult: CalculatedInvestmentDisplay
   calculationRawResult: CaluclatedInvestment
@@ -145,13 +146,16 @@ export class InsureComponent implements OnInit {
 
   confirmInvestment() {
     this.invested = true
+    this.investmentInProcess = true
     this.dataService
       .commitInsurance(this.calculationRawResult)
       .then(() => {
+        this.investmentInProcess = false
         this.reset()
       })
       .catch(err => {
         console.error(err)
+        this.investmentInProcess = false
         this.reset()
       })
   }

@@ -188,16 +188,14 @@ export class ContractsService {
     console.log('insureeDeposit: ', insureeDeposit)
     console.log('investorDeposit: ', investorDeposit)
 
-    const bonusInPercent = insurance.bonus
-
-    const sum = investorDeposit - insureeDeposit / bonusInPercent
+    const sum = investorDeposit - insureeDeposit
 
     console.log('sum: ', sum)
 
     return {
       id: insurance.id,
       risk: insurance.risk,
-      bonus: bonusInPercent,
+      bonus: insurance.bonus,
       month: insurance.month,
       year: insurance.year,
       sum,
@@ -233,7 +231,8 @@ export class ContractsService {
               month: investmentBasisData.month,
               year: investmentBasisData.year,
               sum:
-                Number(this.web3.utils.fromWei(depositInWei, 'ether')) *
+                (Number(this.web3.utils.fromWei(depositInWei, 'ether')) /
+                  investmentBasisData.bonus) *
                 TEST_MULTIPLIER,
             }
           })
@@ -326,7 +325,7 @@ export class ContractsService {
     })
   }
 
-  private async testStuff() { }
+  private async testStuff() {}
 
   private getContracts() {
     this.investContract = new this.web3.eth.Contract(
@@ -405,12 +404,14 @@ export class ContractsService {
     console.log('moneyVault: ', moneyVault)
     console.log((data.volume * data.bonus) / TEST_MULTIPLIER)
 
+    const bonus = data.volume * data.bonus
+    console.log('bonus: ', bonus)
+    const roundedBonus = Math.floor(bonus * 10000) / 100000000
+    console.log('rounded bonus: ', roundedBonus)
+
     const moneyVaultRes = await moneyVault.methods.insureeDeposits().send({
       from: this.myAcc,
-      value: this.web3.utils.toWei(
-        ((data.volume * data.bonus) / TEST_MULTIPLIER).toString(),
-        'ether',
-      ),
+      value: this.web3.utils.toWei(roundedBonus.toString(), 'ether'),
     })
 
     const moneyVaultEvents = await this.moneyVaultContract.getPastEvents(
@@ -447,7 +448,7 @@ export class ContractsService {
   async commitBlockChainInvestment(data: BlockChainInvestment) {
     const tokenNameInvest = `${data.risk} investor ${data.bonus * 100}%`
     const tokenNameInsuree = `${data.risk} insuree ${data.bonus * 100}%`
-    const rateInPercent = (data.bonus * 100).toString(); //not 1e18 or comma!
+    const rateInPercent = (data.bonus * 100).toString() //not 1e18 or comma!
 
     const [insurances, rawInsurances] = await this.getInsuranceData()
     const insIndex = rawInsurances.findIndex(
@@ -513,12 +514,6 @@ export class ContractsService {
       ),
     })
 
-    const moneyVaultEvents = await this.moneyVaultContract.getPastEvents(
-      'allEvents',
-    )
-
-    console.log('moneyVaultRes', moneyVaultRes)
-    console.log('moneyVaultEvents: ', moneyVaultEvents)
     return true
   }
 }

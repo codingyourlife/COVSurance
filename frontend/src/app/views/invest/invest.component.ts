@@ -26,6 +26,7 @@ export class InvestComponent implements OnInit {
     'Dezember',
   ]
   investForm: FormGroup
+  processing: boolean
 
   readTerm: boolean
 
@@ -62,14 +63,21 @@ export class InvestComponent implements OnInit {
     console.log('timeframe: ', timeframe)
     console.log('validUntil: ', validUntil)
     const currentYear = new Date().getFullYear()
-    this.dataServ.invest(
-      risk,
-      volume,
-      bonus / 100,
-      timeframe % InvestComponent.months.length,
-      currentYear + Math.floor(timeframe / InvestComponent.months.length),
-      validUntil,
-    )
+    this.processing = true
+    this.dataServ
+      .invest(
+        risk,
+        volume,
+        bonus / 100,
+        timeframe % InvestComponent.months.length,
+        currentYear + Math.floor(timeframe / InvestComponent.months.length),
+        validUntil,
+      )
+      .then(() => (this.processing = false))
+      .catch(err => {
+        this.processing = false
+        console.error(err)
+      })
     this.investForm.reset()
     this.snackbar.open('Ihr Investment wird bearbeitet..', 'Ok', {
       duration: 1500,

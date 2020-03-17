@@ -101,7 +101,7 @@ export class DataService {
 
   public get myInsurances(): Promise<Investment[]> {
     if (this.lastMyInsurancesPull < Date.now() - 10000) {
-      return this.fetchMyInvestments().then(() => [...this._myInsurances])
+      return this.fetchMyInsurances().then(() => [...this._myInsurances])
     }
     return Promise.resolve([...this._myInsurances])
   }
@@ -221,7 +221,7 @@ export class DataService {
     }
     // console.log(blockChainInvestment);
 
-    await this.contracts.commitBlockChainInvestment(blockChainInvestment)
+    return this.contracts.commitBlockChainInvestment(blockChainInvestment)
 
     // const investment: Investment = {
     //   id: ++DataService.lastId,
