@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, Renderer2 } from '@angular/core'
-import { Title } from '@angular/platform-browser'
+import { Title, DomSanitizer } from '@angular/platform-browser'
 import {
   Router,
   NavigationEnd,
@@ -12,6 +12,7 @@ import { RoutePartsService } from './shared/services/route-parts.service'
 
 import { filter } from 'rxjs/operators'
 import { LayoutService } from './shared/services/layout.service'
+import { MatIconRegistry } from '@angular/material'
 // import { LayoutService } from './shared/services/layout.service';
 
 @Component({
@@ -29,10 +30,18 @@ export class AppComponent implements OnInit, AfterViewInit {
     private activeRoute: ActivatedRoute,
     private routePartsService: RoutePartsService,
     private layout: LayoutService, // private themeService: ThemeService, //private layout: LayoutService, // private renderer: Renderer2
+    private matIconRegistry: MatIconRegistry,
+    private domSanitizer: DomSanitizer,
   ) {}
 
   ngOnInit() {
     this.changePageTitle()
+    this.matIconRegistry.addSvgIcon(
+      'github-logo',
+      this.domSanitizer.bypassSecurityTrustResourceUrl(
+        './assets/images/logo-github.svg',
+      ),
+    )
   }
   ngAfterViewInit() {}
   changePageTitle() {

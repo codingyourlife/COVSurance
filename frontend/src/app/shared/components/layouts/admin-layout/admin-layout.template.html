@@ -64,8 +64,13 @@
           <!-- View outlet -->
           <router-outlet></router-outlet>
           <span class="m-auto" *ngIf="!layoutConf.footerFixed"></span>
+          <app-footer
+            *ngIf="!layoutConf.footerFixed"
+            style="display: block; margin: 0 -.333rem -.33rem"
+          ></app-footer>
         </div>
         <span class="m-auto" *ngIf="layoutConf.footerFixed"></span>
+        <app-footer *ngIf="layoutConf.footerFixed"></app-footer>
       </div>
       <!-- View overlay for mobile navigation -->
       <div
