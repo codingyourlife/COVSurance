@@ -1,5 +1,9 @@
 # COVSurance
 
+COVSurance is an on-blockchain insurance against Corona virus.
+
+Warning: This is a not fully tested prototype created by finothek and CodingYourLife as part of a Hackathon.
+
 ## Get it running (on MacOS)
 
 Install node
